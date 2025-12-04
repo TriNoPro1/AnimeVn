@@ -37,7 +37,7 @@
             background-color: var(--secondary-color);
             border-radius: 8px 8px 0 0;
             margin-bottom: 20px;
-            position: relative; /* Dùng để định vị nút Menu Chính */
+            position: relative;
         }
         
         .reader-header h1 {
@@ -45,12 +45,11 @@
             margin: 0;
         }
         
-        /* Style cho nút Menu Chính */
         .menu-main-btn {
             position: absolute;
             top: 10px;
             right: 15px;
-            background-color: #f39c12; /* Màu vàng cam nổi bật */
+            background-color: #f39c12;
             color: white;
             padding: 8px 15px;
             border-radius: 4px;
@@ -137,7 +136,7 @@
     </div>
 
     <script>
-        // Cấu hình Firebase (Cấu hình chính xác của bạn)
+        // Cấu hình Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
             authDomain: "anime-b1597.firebaseapp.com",
@@ -153,65 +152,77 @@
         
         let currentStoryId = null;
         let currentChapter = 1;
-        let maxChapters = 1; 
-
-        // DỮ LIỆU CƠ BẢN CỦA TRUYỆN VÀ CHƯƠNG 1 (HARDCODED)
+        
+        // DỮ LIỆU CHƯƠNG 1 (HARDCODED)
+        const OPM_CHAPTER_1_PAGES = [
+            'https://i125.truyenvua.com/244/1.0/3.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/4.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/5.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/6.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/7.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/8.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/9.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/10.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/11.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/12.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/13.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/14.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/15.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/16.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/17.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/18.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/19.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/20.jpeg?d=dfgd6546'
+        ];
+        
+        // DỮ LIỆU CHƯƠNG 2 (HARDCODED)
+        const OPM_CHAPTER_2_PAGES = [
+            'https://k00.mbwnp.org/media/7001/5f0be15958fe5316c1c971df/1117361_384341_1066_1600.jpeg',
+            'https://k07.mbzcp.org/media/7001/5f0be15958fe5316c1c971df/1117360_261235_1066_1600.jpeg',
+            'https://n00.mbwnp.org/media/7001/5f0be15958fe5316c1c971df/1117359_240270_1066_1600.jpeg',
+            'https://n14.mbtba.org/media/7001/5f0be15958fe5316c1c971df/1117363_244659_1066_1600.jpeg',
+            'https://n22.mbeaj.org/media/7001/5f0be15958fe5316c1c971df/1117362_277361_1066_1600.jpeg',
+            'https://n15.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117365_314386_1066_1600.jpeg',
+            'https://n26.mbrtz.org/media/7001/5f0be15958fe5316c1c971df/1117364_270357_1066_1600.jpeg',
+            'https://n05.mbeaj.org/media/7001/5f0be15958fe5316c1c971df/1117366_242987_1066_1600.jpeg',
+            'https://k03.mbhiz.org/media/7001/5f0be15958fe5316c1c971df/1117368_460522_1066_1600.jpeg',
+            'https://n03.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117367_327814_1066_1600.jpeg',
+            'https://n30.mbtmv.org/media/7001/5f0be15958fe5316c1c971df/1117369_362462_1066_1600.jpeg',
+            'https://n08.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117370_215985_1066_1600.jpeg',
+            'https://n22.mbdny.org/media/7001/5f0be15958fe5316c1c971df/1117371_374165_1066_1600.jpeg',
+            'https://k08.mbhiz.org/media/7001/5f0be15958fe5316c1c971df/1117372_370895_1066_1600.jpeg',
+            'https://k03.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117373_374299_1066_1600.jpeg',
+            'https://n15.mbimg.org/media/7001/5f0be15958fe5316c1c971df/1117374_352546_1066_1600.jpeg',
+            'https://n26.mbeaj.org/media/amav/af3/5f6e4c6ea09f89b6d8aef3fa.jpg',
+            'https://n09.mbopg.org/media/mbav/dde/dde20dc126d15d55f0b765f3542a76d1f992135d_300_300_146282.png',
+            'https://k05.mbznp.org/media/amav/58d/650305ec1d3ba8cea9dd2d85.jpg',
+            'https://n10.mbwww.org/media/mbav/415/415a70d11ba0f8b8b95266e49116808e5884a479_224_224_23285.jpeg',
+            'https://n16.mbfpu.org/media/mbav/336/336209797267442e543bb6120912216bb8247706_300_300_174765.png',
+            'https://n11.mbzcp.org/media/amav/c23/60e7e4446613c7988ba8b32c.jpg',
+            'https://k08.mbqgu.org/media/mbav/6c2/6c2da8ee767fa7823172052f533e2436b4f44efb_300_300_170270.png',
+            'https://n12.mbxma.org/media/amav/c01/602be9b553da1a14de8bc10c.jpg'
+        ];
+        
         const OPM_DATA = {
             id: 'OPM-1',
             title: 'One Punch Man (Mùa 1)',
-            maxChapters: 1
+            maxChapters: 2
         };
-        
-        const OPM_CHAPTER_1_PAGES = [
-            'https://n06.mbtmv.org/media/7001/5f0be060c104d916e306f98f/1117331_236386_1066_1600.jpeg',
-            'https://n27.mbfpu.org/media/7001/5f0be060c104d916e306f98f/1117332_200838_1066_1600.jpeg',
-            'https://k09.mbtba.org/media/7001/5f0be060c104d916e306f98f/1117334_88905_1066_1600.jpeg',
-            'https://n07.mbuul.org/media/7001/5f0be060c104d916e306f98f/1117336_272057_1066_1600.jpeg',
-            'https://k01.mbimg.org/media/7001/5f0be060c104d916e306f98f/1117335_317482_1066_1600.jpeg',
-            'https://n09.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117337_163062_1066_1600.jpeg',
-            'https://n30.mbeaj.org/media/7001/5f0be060c104d916e306f98f/1117338_448039_1066_1600.jpeg',
-            'https://n10.mbwnp.org/media/7001/5f0be060c104d916e306f98f/1117340_412151_1066_1600.jpeg',
-            'https://n27.mbxma.org/media/7001/5f0be060c104d916e306f98f/1117339_405531_1066_1600.jpeg',
-            'https://n21.mbtba.org/media/7001/5f0be060c104d916e306f98f/1117342_369288_1066_1600.jpeg',
-            'https://k03.mbqgu.org/media/7001/5f0be060c104d916e306f98f/1117341_427657_1066_1600.jpeg',
-            'https://n19.mbrtz.org/media/7001/5f0be060c104d916e306f98f/1117343_252995_1066_1600.jpeg',
-            'https://n16.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117344_154187_1066_1600.jpeg',
-            'https://n29.mbqtj.org/media/7001/5f0be060c104d916e306f98f/1117345_373276_1066_1600.jpeg',
-            'https://n16.mbcej.org/media/7001/5f0be060c104d916e306f98f/1117346_309208_1066_1600.jpeg',
-            'https://n17.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117347_397870_1066_1600.jpeg',
-            'https://n01.mbimg.org/media/7001/5f0be060c104d916e306f98f/1117349_319887_1066_1600.jpeg',
-            'https://n25.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117348_214168_1066_1600.jpeg',
-            'https://n14.mbmyj.org/media/7001/5f0be060c104d916e306f98f/1117350_234095_1066_1600.jpeg',
-            'https://n06.mbcej.org/media/7001/5f0be060c104d916e306f98f/1117351_231373_1066_1600.jpeg',
-            'https://k06.mbzcp.org/media/7001/5f0be060c104d916e306f98f/1117352_399342_1066_1600.jpeg',
-            'https://k00.mbmyj.org/media/7001/5f0be060c104d916e306f98f/1117353_369161_1066_1600.jpeg',
-            'https://n06.mbeaj.org/media/7001/5f0be060c104d916e306f98f/1117354_334637_1066_1600.jpeg',
-            'https://n24.mbdny.org/media/7001/5f0be060c104d916e306f98f/1117355_497615_1066_1600.jpeg',
-            'https://n28.mbxma.org/media/7001/5f0be060c104d916e306f98f/1117356_372710_1066_1600.jpeg',
-            'https://k09.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117357_285956_1066_1600.jpeg',
-            'https://n28.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117358_356588_1066_1600.jpeg',
-            'https://n28.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117358_356588_1066_1600.jpeg'
-        ];
 
-        // HÀM CHÍNH ĐỂ LOAD NỘI DUNG
+        // HÀM CHÍNH ĐỂ LOAD NỘI DUNG CHƯƠNG
         function loadChapterContent(storyId, chapterNum) {
             document.getElementById('loader').style.display = 'block';
             document.getElementById('reader-image-content').innerHTML = '';
 
             try {
-                if (storyId !== OPM_DATA.id || chapterNum !== 1) {
-                    throw new Error("Chương hoặc truyện không tồn tại.");
+                let pageUrls;
+                if (storyId === OPM_DATA.id) {
+                    if (chapterNum === 1) {
+                        pageUrls = OPM_CHAPTER_1_PAGES;
+                    } else if (chapterNum === 2) {
+                        pageUrls = OPM_CHAPTER_2_PAGES;
+                    } else {
+                         throw new Error("Chương truyện không tồn tại.");
+                    }
+                } else {
+                    throw new Error("Truyện không được định nghĩa trong code.");
                 }
                 
                 const story = OPM_DATA;
-                const chapterData = { pageUrls: OPM_CHAPTER_1_PAGES };
-                maxChapters = story.maxChapters;
+                const maxChapters = story.maxChapters;
                 
                 document.getElementById('chapter-title').innerText = `${story.title} - Chương ${chapterNum}`;
                 document.getElementById('readerTitle').innerText = `${story.title} | Chương ${chapterNum}`;
 
                 const contentDiv = document.getElementById('reader-image-content');
-                chapterData.pageUrls.forEach(url => {
+                pageUrls.forEach(url => {
                     const img = document.createElement('img');
                     img.src = url;
                     img.alt = `Trang truyện`;
