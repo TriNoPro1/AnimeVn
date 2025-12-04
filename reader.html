@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="readerTitle">Đang Tải Chương Truyện...</title>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <title>Đang đọc truyện | Chương X</title>
     <style>
         :root {
             --primary-color: #e74c3c;
             --secondary-color: #3498db;
+            --text-color: #2c3e50;
             --bg-color: #ecf0f1;
             --card-bg: #ffffff;
-            --text-color: #2c3e50;
         }
 
         body {
@@ -24,257 +22,481 @@
             line-height: 1.6;
         }
 
-        .container {
-            width: 98%;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px 0;
-        }
-        
-        .reader-header {
-            text-align: center;
-            padding: 15px 0;
-            background-color: var(--secondary-color);
-            border-radius: 8px 8px 0 0;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        .reader-header h1 {
-            font-size: 1.8em;
-            margin: 0;
-        }
-        
-        .menu-main-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background-color: #f39c12;
+        .header {
+            background-color: var(--primary-color);
             color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background-color 0.2s;
-        }
-        .menu-main-btn:hover {
-            background-color: #e67e22;
-        }
-        
-        .reader-content img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto 10px auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            background-color: var(--card-bg);
+            padding: 15px 40px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .reader-nav {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
+            align-items: center;
+            margin: 20px auto;
+            max-width: 900px;
             padding: 10px;
             background-color: #444;
             border-radius: 5px;
         }
+
         .reader-nav button {
-            padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-        .reader-nav button:disabled {
-            background-color: #777;
-            cursor: not-allowed;
-        }
-        .reader-nav a {
             padding: 10px 20px;
             background-color: var(--secondary-color);
             color: white;
+            border: none;
             border-radius: 5px;
             font-weight: bold;
-            text-align: center;
-            line-height: 1.3;
-            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
-        .loader {
+
+        .reader-nav button:disabled {
+            background-color: #7f8c8d;
+            cursor: not-allowed;
+        }
+        
+        .reader-nav button:hover:not(:disabled) {
+            background-color: #2980b9;
+        }
+
+        .reader-content {
             text-align: center;
-            padding: 50px;
-            color: #ccc;
+            background-color: var(--card-bg);
+            padding: 20px 0;
+            margin: 0 auto;
+            max-width: 900px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .reader-content img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .reader-current-chapter {
+            color: white;
+            margin: 0;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="reader-header">
-            <h1 id="chapter-title">Đang Tải...</h1>
-            <a href="index.html" class="menu-main-btn">MENU CHÍNH</a>
-        </div>
+    <div class="header">
+        <h1 id="reader-story-title">Tên Truyện</h1>
+    </div>
 
-        <div class="reader-nav top-nav">
-            <button id="prevBtn" onclick="changeChapter(-1)">← Chương Trước</button>
-            <a href="index.html" style="background-color: #555;">Về Trang Chủ</a>
-            <button id="nextBtn" onclick="changeChapter(1)">Chương Sau →</button>
-        </div>
+    <div class="reader-nav">
+        <button id="prev-btn" onclick="changeChapter(-1)">← Chương Trước</button>
+        <h3 id="reader-current-chapter" class="reader-current-chapter">Chương 0</h3>
+        <button id="next-btn" onclick="changeChapter(1)">Chương Sau →</button>
+    </div>
 
-        <div class="loader" id="loader">Đang tải nội dung chương truyện...</div>
-
-        <div class="reader-content" id="reader-image-content">
+    <div class="reader-content" id="reader-image-content">
         </div>
-
-        <div class="reader-nav bottom-nav">
-            <button id="prevBtnBottom" onclick="changeChapter(-1)">← Chương Trước</button>
-            <a id="detailLink" href="index.html" style="background-color: var(--primary-color);">VỀ TRANG CHI TIẾT</a>
-            <button id="nextBtnBottom" onclick="changeChapter(1)">Chương Sau →</button>
-        </div>
+    
+    <div class="reader-nav" style="margin-bottom: 20px;">
+        <button onclick="window.location.href='index.html'">Về Trang Chủ</button>
+        <button id="back-to-detail-btn">Về Trang Chi Tiết</button>
     </div>
 
     <script>
-        // Cấu hình Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
-            authDomain: "anime-b1597.firebaseapp.com",
-            projectId: "anime-b1597",
-            storageBucket: "anime-b1597.firebasestorage.app",
-            messagingSenderId: "553731174420",
-            appId: "1:553731174420:web:6c01c1cf5bfa2d56567701",
-            measurementId: "G-T01RWXGXPZ"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
         let currentStoryId = null;
-        let currentChapter = 1;
-        
-        // DỮ LIỆU CHƯƠNG 1 (HARDCODED)
-        const OPM_CHAPTER_1_PAGES = [
-            'https://i125.truyenvua.com/244/1.0/3.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/4.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/5.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/6.jpeg?d=dfgd6546',
-            'https://i125.truyenvua.com/244/1.0/7.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/8.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/9.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/10.jpeg?d=dfgd6546',
-            'https://i125.truyenvua.com/244/1.0/11.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/12.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/13.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/14.jpeg?d=dfgd6546',
-            'https://i125.truyenvua.com/244/1.0/15.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/16.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/17.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/18.jpeg?d=dfgd6546',
-            'https://i125.truyenvua.com/244/1.0/19.jpeg?d=dfgd6546','https://i125.truyenvua.com/244/1.0/20.jpeg?d=dfgd6546'
-        ];
-        
-        // DỮ LIỆU CHƯƠNG 2 (HARDCODED)
-        const OPM_CHAPTER_2_PAGES = [
-            'https://k00.mbwnp.org/media/7001/5f0be15958fe5316c1c971df/1117361_384341_1066_1600.jpeg',
-            'https://k07.mbzcp.org/media/7001/5f0be15958fe5316c1c971df/1117360_261235_1066_1600.jpeg',
-            'https://n00.mbwnp.org/media/7001/5f0be15958fe5316c1c971df/1117359_240270_1066_1600.jpeg',
-            'https://n14.mbtba.org/media/7001/5f0be15958fe5316c1c971df/1117363_244659_1066_1600.jpeg',
-            'https://n22.mbeaj.org/media/7001/5f0be15958fe5316c1c971df/1117362_277361_1066_1600.jpeg',
-            'https://n15.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117365_314386_1066_1600.jpeg',
-            'https://n26.mbrtz.org/media/7001/5f0be15958fe5316c1c971df/1117364_270357_1066_1600.jpeg',
-            'https://n05.mbeaj.org/media/7001/5f0be15958fe5316c1c971df/1117366_242987_1066_1600.jpeg',
-            'https://k03.mbhiz.org/media/7001/5f0be15958fe5316c1c971df/1117368_460522_1066_1600.jpeg',
-            'https://n03.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117367_327814_1066_1600.jpeg',
-            'https://n30.mbtmv.org/media/7001/5f0be15958fe5316c1c971df/1117369_362462_1066_1600.jpeg',
-            'https://n08.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117370_215985_1066_1600.jpeg',
-            'https://n22.mbdny.org/media/7001/5f0be15958fe5316c1c971df/1117371_374165_1066_1600.jpeg',
-            'https://k08.mbhiz.org/media/7001/5f0be15958fe5316c1c971df/1117372_370895_1066_1600.jpeg',
-            'https://k03.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117373_374299_1066_1600.jpeg',
-            'https://n15.mbimg.org/media/7001/5f0be15958fe5316c1c971df/1117374_352546_1066_1600.jpeg',
-            'https://n26.mbeaj.org/media/amav/af3/5f6e4c6ea09f89b6d8aef3fa.jpg',
-            'https://n09.mbopg.org/media/mbav/dde/dde20dc126d15d55f0b765f3542a76d1f992135d_300_300_146282.png',
-            'https://k05.mbznp.org/media/amav/58d/650305ec1d3ba8cea9dd2d85.jpg',
-            'https://n10.mbwww.org/media/mbav/415/415a70d11ba0f8b8b95266e49116808e5884a479_224_224_23285.jpeg',
-            'https://n16.mbfpu.org/media/mbav/336/336209797267442e543bb6120912216bb8247706_300_300_174765.png',
-            'https://n11.mbzcp.org/media/amav/c23/60e7e4446613c7988ba8b32c.jpg',
-            'https://k08.mbqgu.org/media/mbav/6c2/6c2da8ee767fa7823172052f533e2436b4f44efb_300_300_170270.png',
-            'https://n12.mbxma.org/media/amav/c01/602be9b553da1a14de8bc10c.jpg'
-        ];
-        
+        let currentChapterNum = 0;
+
+        // --- DỮ LIỆU CỐ ĐỊNH (PHẢI GIỐNG index.html) ---
         const OPM_DATA = {
             id: 'OPM-1',
             title: 'One Punch Man (Mùa 1)',
-            maxChapters: 2
+            maxChapters: 4 
+        };
+        
+        const TBD_DATA = {
+            id: 'TBD-210',
+            title: '210',
+            maxChapters: 0 
         };
 
-        // HÀM CHÍNH ĐỂ LOAD NỘI DUNG CHƯƠNG
-        function loadChapterContent(storyId, chapterNum) {
-            document.getElementById('loader').style.display = 'block';
-            document.getElementById('reader-image-content').innerHTML = '';
+        const STORY_INDEX = [OPM_DATA, TBD_DATA]; 
+        
+        // DỮ LIỆU CHƯƠNG TRUYỆN (HARDCODED)
+        const CHAPTER_DATA = {
+            'OPM-1_1': [
+                'https://n06.mbtmv.org/media/7001/5f0be060c104d916e306f98f/1117331_236386_1066_1600.jpeg',
+                'https://n27.mbfpu.org/media/7001/5f0be060c104d916e306f98f/1117332_200838_1066_1600.jpeg',
+                'https://k09.mbtba.org/media/7001/5f0be060c104d916e306f98f/1117334_88905_1066_1600.jpeg',
+                'https://n07.mbuul.org/media/7001/5f0be060c104d916e306f98f/1117336_272057_1066_1600.jpeg',
+                'https://k01.mbimg.org/media/7001/5f0be060c104d916e306f98f/1117335_317482_1066_1600.jpeg',
+                'https://n09.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117337_163062_1066_1600.jpeg',
+                'https://n30.mbeaj.org/media/7001/5f0be060c104d916e306f98f/1117338_448039_1066_1600.jpeg',
+                'https://n10.mbwnp.org/media/7001/5f0be060c104d916e306f98f/1117340_412151_1066_1600.jpeg',
+                'https://n27.mbxma.org/media/7001/5f0be060c104d916e306f98f/1117339_405531_1066_1600.jpeg',
+                'https://n21.mbtba.org/media/7001/5f0be060c104d916e306f98f/1117342_369288_1066_1600.jpeg',
+                'https://k03.mbqgu.org/media/7001/5f0be060c104d916e306f98f/1117341_427657_1066_1600.jpeg',
+                'https://n19.mbrtz.org/media/7001/5f0be060c104d916e306f98f/1117343_252995_1066_1600.jpeg',
+                'https://n16.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117344_154187_1066_1600.jpeg',
+                'https://n29.mbqtj.org/media/7001/5f0be060c104d916e306f98f/1117345_373276_1066_1600.jpeg',
+                'https://n16.mbcej.org/media/7001/5f0be060c104d916e306f98f/1117346_309208_1066_1600.jpeg',
+                'https://n17.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117347_397870_1066_1600.jpeg',
+                'https://n01.mbimg.org/media/7001/5f0be060c104d916e306f98f/1117349_319887_1066_1600.jpeg',
+                'https://n25.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117348_214168_1066_1600.jpeg',
+                'https://n14.mbmyj.org/media/7001/5f0be060c104d916e306f98f/1117350_234095_1066_1600.jpeg',
+                'https://n06.mbcej.org/media/7001/5f0be060c104d916e306f98f/1117351_231373_1066_1600.jpeg',
+                'https://k06.mbzcp.org/media/7001/5f0be060c104d916e306f98f/1117352_399342_1066_1600.jpeg',
+                'https://k00.mbmyj.org/media/7001/5f0be060c104d916e306f98f/1117353_369161_1066_1600.jpeg',
+                'https://n06.mbeaj.org/media/7001/5f0be060c104d916e306f98f/1117354_334637_1066_1600.jpeg',
+                'https://n24.mbdny.org/media/7001/5f0be060c104d916e306f98f/1117355_497615_1066_1600.jpeg',
+                'https://n28.mbxma.org/media/7001/5f0be060c104d916e306f98f/1117356_372710_1066_1600.jpeg',
+                'https://k09.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117357_285956_1066_1600.jpeg',
+                'https://n28.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117358_356588_1066_1600.jpeg',
+                'https://n28.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117358_356588_1066_1600.jpeg'
+            ],
+            'OPM-1_2': [
+                'https://k00.mbwnp.org/media/7001/5f0be15958fe5316c1c971df/1117361_384341_1066_1600.jpeg',
+                'https://k07.mbzcp.org/media/7001/5f0be15958fe5316c1c971df/1117360_261235_1066_1600.jpeg',
+                'https://n00.mbwnp.org/media/7001/5f0be15958fe5316c1c971df/1117359_240270_1066_1600.jpeg',
+                'https://n14.mbtba.org/media/7001/5f0be15958fe5316c1c971df/1117363_244659_1066_1600.jpeg',
+                'https://n22.mbeaj.org/media/7001/5f0be15958fe5316c1c971df/1117362_277361_1066_1600.jpeg',
+                'https://n15.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117365_314386_1066_1600.jpeg',
+                'https://n26.mbrtz.org/media/7001/5f0be15958fe5316c1c971df/1117364_270357_1066_1600.jpeg',
+                'https://n05.mbeaj.org/media/7001/5f0be15958fe5316c1c971df/1117366_242987_1066_1600.jpeg',
+                'https://k03.mbhiz.org/media/7001/5f0be15958fe5316c1c971df/1117368_460522_1066_1600.jpeg',
+                'https://n03.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117367_327814_1066_1600.jpeg',
+                'https://n30.mbtmv.org/media/7001/5f0be15958fe5316c1c971df/1117369_362462_1066_1600.jpeg',
+                'https://n08.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117370_215985_1066_1600.jpeg',
+                'https://n22.mbdny.org/media/7001/5f0be15958fe5316c1c971df/1117371_374165_1066_1600.jpeg',
+                'https://k08.mbhiz.org/media/7001/5f0be15958fe5316c1c971df/1117372_370895_1066_1600.jpeg',
+                'https://k03.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117373_374299_1066_1600.jpeg',
+                'https://n15.mbimg.org/media/7001/5f0be15958fe5316c1c971df/1117374_352546_1066_1600.jpeg',
+                'https://n26.mbeaj.org/media/amav/af3/5f6e4c6ea09f89b6d8aef3fa.jpg',
+                'https://n09.mbopg.org/media/mbav/dde/dde20dc126d15d55f0b765f3542a76d1f992135d_300_300_146282.png',
+                'https://k05.mbznp.org/media/amav/58d/650305ec1d3ba8cea9dd2d85.jpg',
+                'https://n10.mbwww.org/media/mbav/415/415a70d11ba0f8b8b95266e49116808e5884a479_224_224_23285.jpeg',
+                'https://n16.mbfpu.org/media/mbav/336/336209797267442e543bb6120912216bb8247706_300_300_174765.png',
+                'https://n11.mbzcp.org/media/amav/c23/60e7e4446613c7988ba8b32c.jpg',
+                'https://k08.mbqgu.org/media/mbav/6c2/6c2da8ee767fa7823172052f533e2436b4f44efb_300_300_170270.png',
+                'https://n12.mbxma.org/media/amav/c01/602be9b553da1a14de8bc10c.jpg'
+            ],
+             'OPM-1_3': [
+                'https://n20.mbtba.org/media/7001/5f0be4f6dc2495171784de90/1117415_280410_1066_1600.jpeg',
+                'https://n25.mbdny.org/media/7001/5f0be4f6dc2495171784de90/1117414_325399_1066_1600.jpeg',
+                'https://n17.mbtba.org/media/7001/5f0be4f6dc2495171784de90/1117413_313140_1066_1600.jpeg',
+                'https://n03.mbeaj.org/media/7001/5f0be4f6dc2495171784de90/1117417_342377_1066_1600.jpeg',
+                'https://n25.mbqtj.org/media/7001/5f0be4f6dc2495171784de90/1117416_305965_1066_1600.jpeg',
+                'https://n28.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117418_356629_1066_1600.jpeg',
+                'https://k04.mbwww.org/media/7001/5f0be4f6dc2495171784de90/1117419_415370_1066_1600.jpeg',
+                'https://k06.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117420_432456_1066_1600.jpeg',
+                'https://n09.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117421_380639_1066_1600.jpeg',
+                'https://k02.mbopg.org/media/7001/5f0be4f6dc2495171784de90/1117422_359558_1066_1600.jpeg',
+                'https://n07.mbfpu.org/media/7001/5f0be4f6dc2495171784de90/1117424_314855_1066_1600.jpeg',
+                'https://n21.mbxma.org/media/7001/5f0be4f6dc2495171784de90/1117423_324457_1066_1600.jpeg',
+                'https://n18.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117425_280513_1066_1600.jpeg',
+                'https://k02.mbopg.org/media/7001/5f0be4f6dc2495171784de90/1117426_398590_1066_1600.jpeg',
+                'https://n18.mbtmv.org/media/7001/5f0be4f6dc2495171784de90/1117427_446555_1066_1600.jpeg',
+                'https://n23.mbwbm.org/media/7001/5f0be4f6dc2495171784de90/1117428_385082_1066_1600.jpeg',
+                'https://n25.mbwww.org/media/7001/5f0be4f6dc2495171784de90/1117429_233680_1066_1600.jpeg',
+                'https://n20.mbhiz.org/media/7001/5f0be4f6dc2495171784de90/1117430_364926_1066_1600.jpeg',
+                'https://n07.mbimg.org/media/7001/5f0be4f6dc2495171784de90/1117431_411729_1066_1600.jpeg',
+                'https://n07.mbzcp.org/media/7001/5f0be4f6dc2495171784de90/1117432_390391_1066_1600.jpeg',
+                'https://n21.mbzcp.org/media/7001/5f0be4f6dc2495171784de90/1117434_406387_1066_1600.jpeg',
+                'https://n26.mbcej.org/media/7001/5f0be4f6dc2495171784de90/1117433_323264_1066_1600.jpeg'
+            ],
+            'OPM-1_4': [
+                'https://n06.mbtmv.org/media/7001/5f0be615ce19df16db995c33/1117437_435227_1066_1600.jpeg',
+                'https://n15.mbqtj.org/media/7001/5f0be615ce19df16db995c33/1117436_300547_1066_1600.jpeg',
+                'https://n23.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117435_264958_1066_1600.jpeg',
+                'https://n26.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117440_436225_1066_1600.jpeg',
+                'https://n11.mbxma.org/media/7001/5f0be615ce19df16db995c33/1117438_383633_1066_1600.jpeg',
+                'https://n11.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117439_463219_1066_1600.jpeg',
+                'https://n28.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117441_333030_1066_1600.jpeg',
+                'https://n08.mbzcp.org/media/7001/5f0be615ce19df16db995c33/1117442_376060_1066_1600.jpeg',
+                'https://k04.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117444_333309_1066_1600.jpeg',
+                'https://k08.mbfpu.org/media/7001/5f0be615ce19df16db995c33/1117443_362945_1066_1600.jpeg',
+                'https://k07.mbmyj.org/media/7001/5f0be615ce19df16db995c33/1117447_463364_1066_1600.jpeg',
+                'https://n26.mbimg.org/media/7001/5f0be615ce19df16db995c33/1117445_306727_1066_1600.jpeg',
+                'https://n00.mbwbm.org/media/7001/5f0be615ce19df16db995c33/1117446_401334_1066_1600.jpeg',
+                'https://n16.mbtba.org/media/7001/5f0be615ce19df16db995c33/1117448_361850_1066_1600.jpeg',
+                'https://k04.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117450_459402_1066_1600.jpeg',
+                'https://n09.mbeaj.org/media/7001/5f0be615ce19df16db995c33/1117449_381755_1066_1600.jpeg',
+                'https://n12.mbxma.org/media/7001/5f0be615ce19df16db995c33/1117451_296230_1066_1600.jpeg',
+                'https://k06.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117452_476813_1066_1600.jpeg',
+                'https://n17.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117453_374264_1066_1600.jpeg',
+                'https://n07.mbdny.org/media/7001/5f0be615ce19df16db995c33/1117455_393255_1066_1600.jpeg',
+                'https://k00.mbznp.org/media/7001/5f0be615ce19df16db995c33/1117454_322442_1066_1600.jpeg',
+                'https://n22.mbrtz.org/media/7001/5f0be615ce19df16db995c33/1117457_301072_1066_1600.jpeg',
+                'https://n14.mbzcp.org/media/7001/5f0be615ce19df16db995c33/1117456_353275_1066_1600.jpeg',
+                'https://k08.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117458_383960_1066_1600.jpeg',
+                'https://n17.mbhiz.org/media/7001/5f0be615ce19df16db995c33/1117460_136829_1066_1600.jpeg',
+                'https://k08.mbdny.org/media/7001/5f0be615ce19df16db995c33/1117459_39530_1066_1600.jpeg'
+            ]
+        };
 
+        async function fetchUserByUsername(username) {
             try {
-                let pageUrls;
-                if (storyId === OPM_DATA.id) {
-                    if (chapterNum === 1) {
-                        pageUrls = OPM_CHAPTER_1_PAGES;
-                    } else if (chapterNum === 2) {
-                        pageUrls = OPM_CHAPTER_2_PAGES;
-                    } else {
-                         throw new Error("Chương truyện không tồn tại.");
-                    }
-                } else {
-                    throw new Error("Truyện không được định nghĩa trong code.");
+                const snapshot = await db.collection("users").where("username", "==", username).limit(1).get();
+                if (!snapshot.empty) {
+                    const doc = snapshot.docs[0];
+                    return { uid: doc.id, ...doc.data() };
                 }
-                
-                const story = OPM_DATA;
-                const maxChapters = story.maxChapters;
-                
-                document.getElementById('chapter-title').innerText = `${story.title} - Chương ${chapterNum}`;
-                document.getElementById('readerTitle').innerText = `${story.title} | Chương ${chapterNum}`;
-
-                const contentDiv = document.getElementById('reader-image-content');
-                pageUrls.forEach(url => {
-                    const img = document.createElement('img');
-                    img.src = url;
-                    img.alt = `Trang truyện`;
-                    contentDiv.appendChild(img);
-                });
-
-                // Cập nhật link VỀ TRANG CHI TIẾT
-                document.getElementById('detailLink').href = `index.html?page=detail&story=${storyId}`;
-                
-                updateNavButtons(maxChapters);
-                document.getElementById('loader').style.display = 'none';
-
+                return null;
             } catch (error) {
-                document.getElementById('loader').innerText = `Lỗi tải dữ liệu: ${error.message}`;
-                document.getElementById('chapter-title').innerText = "Lỗi Hệ thống";
-                console.error("Lỗi tải chương:", error);
-                updateNavButtons(currentChapter);
+                console.error("Lỗi truy vấn Firestore:", error);
+                showCustomAlert("Lỗi truy vấn", "Không thể kết nối Firestore để kiểm tra tài khoản. Kiểm tra quy tắc bảo mật.", "Lỗi hệ thống!");
+                return null;
             }
         }
         
-        document.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            currentStoryId = params.get('story');
-            currentChapter = parseInt(params.get('chapter') || '1');
+        async function saveUser(username, password) {
+            try {
+                const docRef = await db.collection("users").add({
+                    username: username,
+                    password: password, 
+                    role: 'reader',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return { uid: docRef.id, username: username, role: 'reader' };
+            } catch (error) {
+                 console.error("Lỗi ghi Firestore:", error);
+                 showCustomAlert("Lỗi ghi dữ liệu", "Không thể tạo hồ sơ người dùng. Kiểm tra quyền GHI trong Firestore Rules.", "Lỗi hệ thống!");
+                 return null;
+            }
+        }
+
+        function showCustomAlert(message, title = "Thông báo") {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-message').innerText = message;
+            const modal = document.getElementById('custom-alert');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('show'); }, 10); 
+        }
+
+        function closeCustomAlert() {
+            const modal = document.getElementById('custom-alert');
+            modal.classList.remove('show');
+            setTimeout(() => { modal.style.display = 'none'; }, 300); 
+        }
+        
+        function updateAuthUI(user) {
+            const authButtons = document.getElementById('auth-buttons');
+            const userActions = document.getElementById('user-actions');
+
+            if (user) {
+                authButtons.style.display = 'none';
+                userActions.style.display = 'block';
+                document.querySelector('#user-actions button:first-child').style.display = 
+                    (user.role === 'author') ? 'inline-block' : 'none';
+            } else {
+                authButtons.style.display = 'block';
+                userActions.style.display = 'none';
+            }
+        }
+        
+        function showPage(pageId, storyId = null) {
+            document.querySelectorAll('.page-view').forEach(page => page.style.display = 'none');
             
-            if (currentStoryId) {
-                loadChapterContent(currentStoryId, currentChapter);
-            } else {
-                document.getElementById('loader').innerText = "Lỗi: Không tìm thấy ID truyện.";
-                document.getElementById('chapter-title').innerText = "Lỗi";
+            if (pageId === 'list') {
+                document.getElementById('list-page').style.display = 'flex';
+                currentStoryId = null;
+            } else if (pageId === 'detail') {
+                document.getElementById('detail-page').style.display = 'block';
+                currentStoryId = storyId || currentStoryId;
+                renderDetailPage(currentStoryId);
+            } else if (pageId === 'upload') {
+                 const user = JSON.parse(localStorage.getItem('currentUserData'));
+                 if (user && user.role === 'author') {
+                     document.getElementById('upload-page').style.display = 'block';
+                 } else {
+                     showCustomAlert("Bạn không có quyền tác giả để truy cập chức năng này.", "Truy cập bị từ chối!");
+                     showPage('list');
+                 }
             }
+            window.scrollTo(0, 0);
+        }
+        
+        function getStoryData(storyId) {
+            return STORY_INDEX.find(s => s.id === storyId);
+        }
+
+        async function renderDetailPage(storyId) {
+            const story = getStoryData(storyId);
+            const detailThumbImg = document.getElementById('detail-thumb-img');
+            const detailThumbText = document.getElementById('detail-thumb-text');
+
+            if (!story) {
+                showCustomAlert("Truyện này không tồn tại.", "Lỗi 404!");
+                showPage('list');
+                return;
+            }
+            
+            if (story.maxChapters === 0) {
+                 showCustomAlert("Truyện này đang cập nhật nội dung.", "Thông báo!");
+                 showPage('list');
+                 return;
+            }
+            
+            document.getElementById('detail-title').innerText = story.title;
+            document.getElementById('detail-description').innerText = story.description;
+            document.getElementById('detail-genres').innerText = story.genres.join(', ');
+            document.getElementById('detail-status').innerText = story.status;
+
+            if (story.thumb.startsWith('http')) {
+                detailThumbImg.src = story.thumb;
+                detailThumbImg.style.display = 'block';
+                detailThumbText.style.display = 'none';
+            } else {
+                detailThumbText.innerText = story.thumb;
+                detailThumbText.style.display = 'flex';
+                detailThumbImg.style.display = 'none';
+            }
+
+            document.getElementById('startReadingBtn').onclick = () => startReading(1);
+
+            const chapterGrid = document.getElementById('chapter-list-grid');
+            chapterGrid.innerHTML = ''; 
+
+            for (let i = story.maxChapters; i >= 1; i--) {
+                const chapterLink = document.createElement('a');
+                chapterLink.href = `#chapter${i}`;
+                chapterLink.innerText = `Chương ${i}`;
+                chapterLink.onclick = (e) => {
+                    e.preventDefault();
+                    startReading(i);
+                };
+                chapterGrid.appendChild(chapterLink);
+            }
+        }
+        
+        function startReading(chapterNum) {
+             const storyId = currentStoryId;
+             const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
+             window.location.href = newUrl;
+        }
+
+        function openModal(formType) {
+            document.getElementById('auth-modal').style.display = 'flex';
+            showForm(formType);
+        }
+
+        function closeModal() {
+            document.getElementById('auth-modal').style.display = 'none';
+        }
+
+        function showForm(formType) {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'none';
+            if (formType === 'login') {
+                document.getElementById('login-form').style.display = 'block';
+            } else if (formType === 'register') {
+                document.getElementById('register-form').style.display = 'block';
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-psw').value;
+
+            const existingUser = await fetchUserByUsername(username);
+            if (existingUser) {
+                showCustomAlert("Tên đăng nhập này đã được sử dụng.", "Đăng ký thất bại!");
+                return;
+            }
+
+            const newUser = await saveUser(username, password);
+            
+            if (newUser) {
+                showCustomAlert("Đăng ký thành công! Vui lòng đăng nhập.", "Hoàn tất!");
+                document.getElementById('reg-username').value = '';
+                document.getElementById('reg-psw').value = '';
+                showForm('login');
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-user').value;
+            const password = document.getElementById('login-psw').value;
+
+            const user = await fetchUserByUsername(username);
+
+            if (user && user.password === password) {
+                localStorage.setItem('currentUserData', JSON.stringify(user));
+                closeModal();
+                showCustomAlert(`Đăng nhập thành công!`, "Hoàn tất!");
+                checkLoginStatus();
+            } else {
+                showCustomAlert("Sai Tên đăng nhập hoặc Mật khẩu.", "Đăng nhập thất bại!");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUserData');
+            showCustomAlert("Đã đăng xuất thành công.", "Hoàn tất!");
+            checkLoginStatus();
+        }
+
+        async function handleUpload(event) {
+            event.preventDefault();
+            
+            const userData = JSON.parse(localStorage.getItem('currentUserData'));
+            if (!userData || userData.role !== 'author') {
+                showCustomAlert("Lỗi: Bạn không có quyền tác giả để tải truyện.", "Truy cập bị từ chối!");
+                return;
+            }
+            
+            showCustomAlert("Chức năng tải truyện bị vô hiệu hóa vì yêu cầu Firebase Storage.", "Lỗi chức năng!");
+        }
+        
+        async function loadStories() {
+            const grid = document.getElementById('story-list-grid');
+            grid.innerHTML = '';
+            
+            STORY_INDEX.forEach(story => {
+                const isTextOnly = !story.thumb.startsWith('http'); 
+                const coverStyle = isTextOnly ? '' : `background-image: url('${story.thumb}');`;
+                const textClass = isTextOnly ? 'text-only' : '';
+                const thumbContent = isTextOnly ? `<span>${story.thumb}</span>` : '';
+
+                const html = `
+                    <div class="story-item" onclick="showPage('detail', '${story.id}')">
+                        <div class="cover-placeholder ${textClass}" style="${coverStyle}">
+                            ${thumbContent}
+                        </div>
+                        <div class="story-info">
+                            <h4>${story.title}</h4>
+                            <p>Tập mới nhất: ${story.maxChapters > 0 ? story.maxChapters : 'N/A'}</p>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += html;
+            });
+            
+             if (window.location.hash.includes('#detail/')) {
+                const storyId = window.location.hash.split('/')[1];
+                showPage('detail', storyId);
+                window.location.hash = '';
+            }
+        }
+
+        function checkLoginStatus() {
+            const userData = localStorage.getItem('currentUserData');
+            if (userData) {
+                const user = JSON.parse(userData);
+                updateAuthUI(user);
+            } else {
+                updateAuthUI(null);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLoginStatus();
+            loadStories(); 
         });
-
-        function changeChapter(direction) {
-            const newChapter = currentChapter + direction;
-            const max = OPM_DATA.maxChapters;
-
-            if (newChapter >= 1 && newChapter <= max) {
-                const newUrl = `reader.html?story=${currentStoryId}&chapter=${newChapter}`;
-                window.location.href = newUrl;
-            } else {
-                const msg = direction > 0 ? "Đây là chương cuối cùng!" : "Đây là chương đầu tiên!";
-                alert(msg);
-            }
-        }
-
-        function updateNavButtons(maxChapters) {
-            document.getElementById('prevBtn').disabled = (currentChapter <= 1);
-            document.getElementById('prevBtnBottom').disabled = (currentChapter <= 1);
-            document.getElementById('nextBtn').disabled = (currentChapter >= maxChapters);
-            document.getElementById('nextBtnBottom').disabled = (currentChapter >= maxChapters);
-        }
     </script>
 </body>
 </html>
