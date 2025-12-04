@@ -37,11 +37,29 @@
             background-color: var(--secondary-color);
             border-radius: 8px 8px 0 0;
             margin-bottom: 20px;
+            position: relative; /* Dùng để định vị nút Menu Chính */
         }
         
         .reader-header h1 {
             font-size: 1.8em;
             margin: 0;
+        }
+        
+        /* Style cho nút Menu Chính */
+        .menu-main-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: #f39c12; /* Màu vàng cam nổi bật */
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .menu-main-btn:hover {
+            background-color: #e67e22;
         }
         
         .reader-content img {
@@ -97,6 +115,7 @@
     <div class="container">
         <div class="reader-header">
             <h1 id="chapter-title">Đang Tải...</h1>
+            <a href="index.html" class="menu-main-btn">MENU CHÍNH</a>
         </div>
 
         <div class="reader-nav top-nav">
@@ -118,7 +137,7 @@
     </div>
 
     <script>
-        // Cấu hình Firebase (Cho dù không dùng Auth, vẫn cần để init)
+        // Cấu hình Firebase (Cấu hình chính xác của bạn)
         const firebaseConfig = {
             apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
             authDomain: "anime-b1597.firebaseapp.com",
@@ -134,12 +153,13 @@
         
         let currentStoryId = null;
         let currentChapter = 1;
-        
+        let maxChapters = 1; 
+
         // DỮ LIỆU CƠ BẢN CỦA TRUYỆN VÀ CHƯƠNG 1 (HARDCODED)
         const OPM_DATA = {
             id: 'OPM-1',
             title: 'One Punch Man (Mùa 1)',
-            maxChapters: 1 // Chỉ có 1 chương mẫu
+            maxChapters: 1
         };
         
         const OPM_CHAPTER_1_PAGES = [
@@ -179,30 +199,30 @@
             document.getElementById('reader-image-content').innerHTML = '';
 
             try {
-                // TÌM DỮ LIỆU CHAPTER TRONG JS
-                if (storyId === OPM_DATA.id && chapterNum === 1) {
-                    const chapterData = { pageUrls: OPM_CHAPTER_1_PAGES };
-                    const story = OPM_DATA;
-                    
-                    document.getElementById('chapter-title').innerText = `${story.title} - Chương ${chapterNum}`;
-                    document.getElementById('readerTitle').innerText = `${story.title} | Chương ${chapterNum}`;
-
-                    const contentDiv = document.getElementById('reader-image-content');
-                    chapterData.pageUrls.forEach(url => {
-                        const img = document.createElement('img');
-                        img.src = url;
-                        img.alt = `Trang truyện`;
-                        contentDiv.appendChild(img);
-                    });
-
-                    // Cập nhật link VỀ TRANG CHI TIẾT
-                    document.getElementById('detailLink').href = `index.html?page=detail&story=${storyId}`;
-                    
-                    updateNavButtons(story.maxChapters);
-                    document.getElementById('loader').style.display = 'none';
-                } else {
-                    throw new Error("Không tìm thấy chương hoặc truyện này.");
+                if (storyId !== OPM_DATA.id || chapterNum !== 1) {
+                    throw new Error("Chương hoặc truyện không tồn tại.");
                 }
+                
+                const story = OPM_DATA;
+                const chapterData = { pageUrls: OPM_CHAPTER_1_PAGES };
+                maxChapters = story.maxChapters;
+                
+                document.getElementById('chapter-title').innerText = `${story.title} - Chương ${chapterNum}`;
+                document.getElementById('readerTitle').innerText = `${story.title} | Chương ${chapterNum}`;
+
+                const contentDiv = document.getElementById('reader-image-content');
+                chapterData.pageUrls.forEach(url => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.alt = `Trang truyện`;
+                    contentDiv.appendChild(img);
+                });
+
+                // Cập nhật link VỀ TRANG CHI TIẾT
+                document.getElementById('detailLink').href = `index.html?page=detail&story=${storyId}`;
+                
+                updateNavButtons(maxChapters);
+                document.getElementById('loader').style.display = 'none';
 
             } catch (error) {
                 document.getElementById('loader').innerText = `Lỗi tải dữ liệu: ${error.message}`;
@@ -227,10 +247,9 @@
 
         function changeChapter(direction) {
             const newChapter = currentChapter + direction;
-            const maxChapters = OPM_DATA.maxChapters;
+            const max = OPM_DATA.maxChapters;
 
-            if (newChapter >= 1 && newChapter <= maxChapters) {
-                // Chuyển hướng đến chương mới (trong trường hợp này, chỉ có 1 chương)
+            if (newChapter >= 1 && newChapter <= max) {
                 const newUrl = `reader.html?story=${currentStoryId}&chapter=${newChapter}`;
                 window.location.href = newUrl;
             } else {
