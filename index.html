@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Truyện - Tối ưu và Chỉ dùng Tên đăng nhập</title>
+    <title>Web Truyện - Tích hợp Firebase Linh hoạt (Username/Email)</title>
     <style>
-        /* --- CSS Tối Ưu (Giữ nguyên phần trước) --- */
+        /* --- CSS TỐI ƯU VÀ GIỮ NGUYÊN --- */
         :root {
-            --primary-color: #e74c3c; /* Đỏ - Màu thương hiệu */
-            --secondary-color: #3498db; /* Xanh dương - Nổi bật */
+            --primary-color: #e74c3c;
+            --secondary-color: #3498db;
             --text-color: #2c3e50;
             --bg-color: #ecf0f1;
             --card-bg: #ffffff;
@@ -69,7 +69,6 @@
             margin: 20px auto;
         }
         
-        /* Layout */
         .main-layout {
             display: flex;
             gap: 30px;
@@ -111,7 +110,6 @@
             color: var(--secondary-color);
         }
 
-        /* Grid Truyện */
         .story-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -213,6 +211,7 @@
         }
 
         .modal-content input[type="text"],
+        .modal-content input[type="email"],
         .modal-content input[type="password"] {
             width: 100%;
             padding: 12px;
@@ -328,7 +327,7 @@
             <button onclick="openModal('register')">Đăng ký</button>
         </div>
         <div class="auth-buttons" id="user-actions" style="display: none;">
-            <button onclick="showPage('upload')">Bảng điều khiển ⚙️</button>
+            <button onclick="showPage('upload')">Bảng điều khiển ⚙️</button> 
             <button onclick="logout()">Đăng xuất</button>
         </div>
     </div>
@@ -341,51 +340,21 @@
                     <li><a href="#">Hành Động</a></li>
                     <li><a href="#">Hài Hước</a></li>
                     <li><a href="#">Lãng Mạn</a></li>
-                    <li><a href="#">Fantasy</a></li>
-                    <li><a href="#">Isekai</a></li>
                 </ul>
             </div>
 
             <div class="main-content">
                 <h2>✨ Truyện Mới Cập Nhật</h2>
-                <div class="story-grid">
-                    <div class="story-item" onclick="alert('Đang chuyển đến trang đọc truyện...')">
-                        <div class="cover-placeholder">
-                            <span>Truyện A: Hỗn Chiến</span>
-                        </div>
-                        <div class="story-info">
-                            <h4>Truyện Thử Nghiệm A</h4>
-                            <p>Tập mới nhất: 12</p>
-                        </div>
+                <div class="story-grid" id="story-list-grid">
+                    <p style="text-align: center;">Đang tải truyện...</p>
                     </div>
-
-                    <div class="story-item" onclick="alert('Đang chuyển đến trang đọc truyện...')">
-                        <div class="cover-placeholder">
-                            <span>Truyện B: Lãng Mạn</span>
-                        </div>
-                        <div class="story-info">
-                            <h4>Cuộc Phiêu Lưu B</h4>
-                            <p>Tập mới nhất: 88</p>
-                        </div>
-                    </div>
-                    
-                    <div class="story-item" onclick="alert('Đang chuyển đến trang đọc truyện...')">
-                        <div class="cover-placeholder">
-                            <span>Truyện C: Thám Tử</span>
-                        </div>
-                        <div class="story-info">
-                            <h4>Siêu Thám Tử C</h4>
-                            <p>Tập mới nhất: 1000+</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
         <div id="upload-page" class="page-view" style="display: none;">
             <div class="upload-dashboard">
                 <h2>⬆️ Tải Truyện Lên Web</h2>
-                <p>Khu vực này chỉ hiển thị khi tài khoản của bạn đã được Admin xác minh là tài khoản tải giả.</p>
+                <p>Khu vực này chỉ hiển thị khi tài khoản của bạn có vai trò tác giả ('author').</p>
                 
                 <form class="upload-form" onsubmit="handleUpload(event)">
                     <label for="title">Tên Truyện:</label>
@@ -395,7 +364,6 @@
                     <select id="genre" name="genre">
                         <option value="Action">Hành Động</option>
                         <option value="Comedy">Hài Hước</option>
-                        <option value="Romance">Lãng Mạn</option>
                     </select>
 
                     <label for="description">Mô tả tóm tắt:</label>
@@ -421,8 +389,8 @@
             <div id="login-form">
                 <h2>Đăng nhập</h2>
                 <form onsubmit="handleLogin(event)">
-                    <label for="login-user"><b>Tên đăng nhập</b></label>
-                    <input type="text" placeholder="Nhập Tên đăng nhập" name="login-user" id="login-user" required>
+                    <label for="login-user"><b>Tên đăng nhập hoặc Email</b></label>
+                    <input type="text" placeholder="Nhập Tên đăng nhập hoặc Email" name="login-user" id="login-user" required> 
 
                     <label for="login-psw"><b>Mật khẩu</b></label>
                     <input type="password" placeholder="Nhập Mật khẩu" name="login-psw" id="login-psw" required>
@@ -437,8 +405,11 @@
             <div id="register-form" style="display: none;">
                 <h2>Đăng ký</h2>
                 <form onsubmit="handleRegister(event)">
-                    <label for="reg-user"><b>Tên đăng nhập</b></label>
-                    <input type="text" placeholder="Nhập Tên đăng nhập" name="reg-user" id="reg-user" required>
+                    <label for="reg-username"><b>Tên đăng nhập (BẮT BUỘC)</b></label>
+                    <input type="text" placeholder="Nhập Tên đăng nhập" name="reg-username" id="reg-username" required>
+
+                    <label for="reg-email"><b>Email (TÙY CHỌN)</b></label>
+                    <input type="email" placeholder="Nhập Email (để khôi phục mật khẩu)" name="reg-email" id="reg-email">
 
                     <label for="reg-psw"><b>Mật khẩu</b></label>
                     <input type="password" placeholder="Nhập Mật khẩu (tối thiểu 6 ký tự)" name="reg-psw" id="reg-psw" minlength="6" required>
@@ -453,15 +424,86 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
 
     <script>
-        let isAuthenticated = false; // Trạng thái giả lập đăng nhập
-        let isVerifiedUploader = false; // Trạng thái giả lập tài khoản tải giả
-        
-        // Tài khoản Uploader giả lập (Chỉ cần dùng tên đăng nhập này để đăng nhập)
-        const UPLOADER_USERNAME = "admin_upload";
+        // --- CHÚ Ý QUAN TRỌNG: CẦN THAY THẾ CẤU HÌNH NÀY BẰNG CẤU HÌNH DỰ ÁN THẬT CỦA BẠN ---
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
 
-        // --- Hàm quản lý Modal ---
+        // Khởi tạo Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Lấy các tham chiếu đến dịch vụ
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // Biến toàn cục
+        let currentUserRole = 'reader'; 
+        const DUMMY_DOMAIN = "@truyentranh-hub.com"; // Tên miền giả lập
+
+        // --- Hàm quản lý Page View và UI ---
+
+        // Hàm kiểm tra vai trò người dùng (Đọc từ Firestore)
+        async function checkUserRole(uid) {
+            try {
+                const doc = await db.collection("users").doc(uid).get();
+                if (doc.exists && doc.data().role) {
+                    return doc.data().role;
+                }
+            } catch (error) {
+                console.error("Lỗi đọc vai trò từ Firestore:", error);
+            }
+            return 'reader'; 
+        }
+
+        async function updateAuthUI(user) {
+            const uploadButton = document.querySelector('#user-actions button:first-child');
+            const authButtons = document.getElementById('auth-buttons');
+            const userActions = document.getElementById('user-actions');
+
+            if (user) {
+                currentUserRole = await checkUserRole(user.uid);
+                authButtons.style.display = 'none';
+                userActions.style.display = 'block';
+
+                uploadButton.style.display = (currentUserRole === 'author') ? 'inline-block' : 'none';
+                console.log(`Người dùng đã đăng nhập: ${user.email}, Vai trò: ${currentUserRole}`);
+            } else {
+                currentUserRole = 'reader';
+                authButtons.style.display = 'block';
+                userActions.style.display = 'none';
+                showPage('list');
+            }
+        }
+        
+        function showPage(pageId) {
+            document.getElementById('list-page').style.display = 'none';
+            document.getElementById('upload-page').style.display = 'none';
+            
+            if (pageId === 'list') {
+                document.getElementById('list-page').style.display = 'flex';
+            } else if (pageId === 'upload') {
+                if (currentUserRole === 'author') {
+                    document.getElementById('upload-page').style.display = 'block';
+                } else {
+                    alert("Bạn không có quyền tác giả để truy cập chức năng tải truyện.");
+                    showPage('list');
+                }
+            }
+            window.scrollTo(0, 0);
+        }
+
         function openModal(formType) {
             document.getElementById('auth-modal').style.display = 'flex';
             showForm(formType);
@@ -480,89 +522,180 @@
                 document.getElementById('register-form').style.display = 'block';
             }
         }
-        
-        // --- Hàm quản lý Page View ---
-        function showPage(pageId) {
-            document.getElementById('list-page').style.display = 'none';
-            document.getElementById('upload-page').style.display = 'none';
-            
-            if (pageId === 'list') {
-                document.getElementById('list-page').style.display = 'flex';
-            } else if (pageId === 'upload') {
-                if (isAuthenticated && isVerifiedUploader) {
-                    document.getElementById('upload-page').style.display = 'block';
-                } else {
-                    alert("Bạn cần phải là tài khoản tải giả đã được xác minh để truy cập chức năng này.");
-                    showPage('list'); // Chuyển về trang danh sách
+
+        // --- Logic Đăng ký Firebase Auth (Linh hoạt) ---
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            let email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-psw').value;
+
+            // Kiểm tra tên đăng nhập đã được sử dụng chưa (cần kiểm tra trong Firestore)
+            const existingUser = await db.collection("users").where("username", "==", username).get();
+            if (!existingUser.empty) {
+                alert("Lỗi: Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.");
+                return;
+            }
+
+            if (!email) {
+                // TẠO EMAIL GIẢ LẬP cho Firebase Auth
+                email = `${username.toLowerCase()}${DUMMY_DOMAIN}`;
+            }
+
+            try {
+                // Sử dụng Firebase Auth để tạo tài khoản bằng Email (thật hoặc giả)
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Lưu thông tin người dùng vào Firestore
+                await db.collection("users").doc(userCredential.user.uid).set({
+                    username: username, // Lưu Tên đăng nhập thật
+                    email: email,       // Lưu Email (thật hoặc giả)
+                    role: 'reader', 
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("Đăng ký thành công! Vui lòng đăng nhập.");
+                showForm('login');
+            } catch (error) {
+                alert("Lỗi đăng ký: " + error.message);
+                console.error(error);
+            }
+        }
+
+        // --- Logic Đăng nhập Firebase Auth (Linh hoạt) ---
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const input = document.getElementById('login-user').value;
+            const password = document.getElementById('login-psw').value;
+            let loginEmail = input;
+
+            // 1. Kiểm tra xem đầu vào là Email hay Tên đăng nhập
+            if (!input.includes('@')) {
+                // Nếu không có ký tự '@', đây là Tên đăng nhập. Phải tìm Email thật trong Firestore.
+                try {
+                    // Tìm kiếm Email thật/giả lập từ Firestore
+                    const snapshot = await db.collection("users").where("username", "==", input).limit(1).get();
+                    if (snapshot.empty) {
+                        alert("Tên đăng nhập hoặc Email không tồn tại.");
+                        return;
+                    }
+                    loginEmail = snapshot.docs[0].data().email; 
+
+                } catch (error) {
+                    alert("Lỗi tìm kiếm tên đăng nhập: " + error.message);
+                    return;
                 }
             }
-            window.scrollTo(0, 0);
-        }
-
-
-        // --- Hàm xử lý Mô phỏng Auth ---
-        function updateAuthUI() {
-            const authButtons = document.getElementById('auth-buttons');
-            const userActions = document.getElementById('user-actions');
             
-            if (isAuthenticated) {
-                authButtons.style.display = 'none';
-                userActions.style.display = 'block';
-            } else {
-                authButtons.style.display = 'block';
-                userActions.style.display = 'none';
+            // 2. Tiến hành đăng nhập bằng Email (thật hoặc giả lập) và Mật khẩu
+            try {
+                await auth.signInWithEmailAndPassword(loginEmail, password);
+                closeModal();
+                alert(`Đăng nhập thành công!`);
+            } catch (error) {
+                // Lỗi đăng nhập có thể do mật khẩu sai hoặc Firebase không tìm thấy email đó
+                alert("Lỗi đăng nhập: Sai Tên đăng nhập/Email hoặc Mật khẩu.");
             }
         }
 
-        function handleLogin(event) {
+        async function logout() {
+            try {
+                await auth.signOut();
+                alert("Đã đăng xuất.");
+            } catch (error) {
+                alert("Lỗi đăng xuất: " + error.message);
+            }
+        }
+
+        // --- Logic Đăng tải Truyện Firebase Storage + Firestore (Giữ nguyên) ---
+        async function handleUpload(event) {
             event.preventDefault();
-            // --- Backend: Xác minh tên đăng nhập/pass với CSDL ---
             
-            const username = document.getElementById('login-user').value;
-            
-            // Giả lập đăng nhập thành công
-            isAuthenticated = true;
-            
-            // Giả lập trạng thái tài khoản tải giả dựa trên Tên đăng nhập
-            if (username.toLowerCase() === UPLOADER_USERNAME) {
-                isVerifiedUploader = true;
-            } else {
-                isVerifiedUploader = false;
+            if (currentUserRole !== 'author') {
+                alert("Lỗi: Bạn không có quyền tác giả để tải truyện.");
+                return;
             }
 
-            updateAuthUI();
-            closeModal();
-            alert(`Đăng nhập thành công! ${isVerifiedUploader ? 'Bạn có thể tải truyện lên.' : 'Bạn là người dùng thông thường.'}`);
-            showPage('list');
+            const title = document.getElementById('title').value;
+            const genre = document.getElementById('genre').value;
+            const description = document.getElementById('description').value;
+            const coverFile = document.getElementById('cover-image').files[0];
+            const chapterFiles = document.getElementById('chapter-files').files;
+
+            try {
+                const user = auth.currentUser;
+                
+                const coverRef = storage.ref(`covers/${user.uid}/${Date.now()}_${coverFile.name}`);
+                const coverSnapshot = await coverRef.put(coverFile);
+                const coverUrl = await coverSnapshot.ref.getDownloadURL();
+
+                const newStoryRef = await db.collection("stories").add({
+                    title: title,
+                    genre: genre,
+                    description: description,
+                    coverUrl: coverUrl,
+                    authorUid: user.uid,
+                    status: 'active',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Tải các chapter (Đơn giản hóa)
+                for (const file of chapterFiles) {
+                    const chapterRef = storage.ref(`chapters/${newStoryRef.id}/${file.name}`);
+                    await chapterRef.put(file);
+                }
+                
+                alert(`Tải truyện "${title}" thành công! Truyện đã được thêm vào Firestore.`);
+                event.target.reset(); 
+                showPage('list'); 
+
+            } catch (error) {
+                console.error("Lỗi tải truyện lên:", error);
+                alert("Lỗi tải truyện lên: " + error.message);
+            }
+        }
+        
+        // --- Logic Tải danh sách truyện từ Firestore (Realtime) ---
+        function loadStories() {
+            const grid = document.getElementById('story-list-grid');
+            grid.innerHTML = '<p style="text-align: center;">Đang tải truyện từ Firestore...</p>';
+
+            db.collection("stories").orderBy("createdAt", "desc").limit(10).onSnapshot((snapshot) => {
+                grid.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const story = doc.data();
+                    // Nếu coverUrl có sẵn, sử dụng nó làm background-image
+                    const coverStyle = story.coverUrl ? 
+                        `background-image: url('${story.coverUrl}'); background-size: cover; background-position: center;` : 
+                        `background-color: #3498db;`;
+
+                    const html = `
+                        <div class="story-item" onclick="alert('Xem truyện: ${story.title}')">
+                            <div class="cover-placeholder" style="${coverStyle} color: white;">
+                                <span style="font-size: 1.1em;">${story.title}</span>
+                            </div>
+                            <div class="story-info">
+                                <h4>${story.title}</h4>
+                                <p>Thể loại: ${story.genre}</p>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += html;
+                });
+                if (snapshot.empty) {
+                     grid.innerHTML = '<p style="text-align: center;">Chưa có truyện nào được tải lên.</p>';
+                }
+            }, (error) => {
+                console.error("Lỗi tải truyện:", error);
+                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối hoặc quyền Firestore. Vui lòng kiểm tra console.</p>';
+            });
         }
 
-        function handleRegister(event) {
-            event.preventDefault();
-            // --- Backend: Tạo người dùng mới trong CSDL ---
-            
-            alert("Đăng ký thành công! Vui lòng đăng nhập.");
-            showForm('login');
-        }
-
-        function logout() {
-            isAuthenticated = false;
-            isVerifiedUploader = false;
-            updateAuthUI();
-            alert("Đã đăng xuất.");
-            showPage('list');
-        }
-
-        function handleUpload(event) {
-            event.preventDefault();
-            // --- Backend: Xử lý Upload file (lưu trữ) và ghi Data vào CSDL ---
-            
-            alert("Đã nhận thông tin. Trong ứng dụng thật, file sẽ được xử lý và lưu vào server/database.");
-            event.target.reset(); // Xóa form
-            showPage('list');
-        }
-
-        // Khởi tạo trạng thái UI
-        updateAuthUI();
+        // --- Khởi tạo UI và Event Listeners ---
+        auth.onAuthStateChanged(updateAuthUI);
+        document.addEventListener('DOMContentLoaded', loadStories);
     </script>
 </body>
 </html>
