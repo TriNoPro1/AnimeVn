@@ -220,7 +220,9 @@
 
         .modal-content input[type="text"],
         .modal-content input[type="email"],
-        .modal-content input[type="password"] {
+        .modal-content input[type="password"],
+        .modal-content textarea,
+        .modal-content select {
             width: 100%;
             padding: 12px;
             margin: 8px 0 15px 0;
@@ -288,9 +290,11 @@
         }
 
         .detail-thumb .cover-placeholder {
+             /* Dùng lại CSS này để hiển thị placeholder chữ */
              width: 100%;
-             height: 350px;
+             height: 350px; /* Điều chỉnh chiều cao phù hợp */
         }
+
 
         .detail-info h1 {
             color: var(--primary-color);
@@ -464,6 +468,7 @@
     </div>
 
     <script>
+        // Cần setup Firebase Config của bạn tại đây
         const firebaseConfig = {
             apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
             authDomain: "anime-b1597.firebaseapp.com",
@@ -487,7 +492,7 @@
             title: 'One Punch Man (Mùa 1)',
             thumb: 'https://cdn.animevn.net/images/thumbs/one-punch-man-3.jpg',
             genres: ['Hành Động', 'Hài Hước', 'Siêu Năng lực'],
-            description: 'Manga kể về Saitama, một siêu anh hùng trở nên quá mạnh mẽ đến nỗi có thể đánh bại bất kỳ đối thủ nào chỉ bằng một cú đấm duy nhất. Vì vậy, anh phải đối mặt với một cuộc khủng hoảng: không có đối thủ xứng tầm, anh không còn cảm thấy sự hồi hộp khi chiến đấu.',
+            description: 'Manga kể về Saitama, một siêu anh hùng trở nên quá mạnh mẽ đến nỗi có thể đánh bại bất kỳ đối thủ nào chỉ bằng một cú đấm duy nhất.',
             status: 'Hoàn thành',
             maxChapters: 2 
         };
@@ -542,65 +547,8 @@
                 'https://n11.mbzcp.org/media/amav/c23/60e7e4446613c7988ba8b32c.jpg',
                 'https://k08.mbqgu.org/media/mbav/6c2/6c2da8ee767fa7823172052f533e2436b4f44efb_300_300_170270.png',
                 'https://n12.mbxma.org/media/amav/c01/602be9b553da1a14de8bc10c.jpg'
-            ],
-            'OPM-1_3': [
-                'https://n20.mbtba.org/media/7001/5f0be4f6dc2495171784de90/1117415_280410_1066_1600.jpeg',
-                'https://n25.mbdny.org/media/7001/5f0be4f6dc2495171784de90/1117414_325399_1066_1600.jpeg',
-                'https://n17.mbtba.org/media/7001/5f0be4f6dc2495171784de90/1117413_313140_1066_1600.jpeg',
-                'https://n03.mbeaj.org/media/7001/5f0be4f6dc2495171784de90/1117417_342377_1066_1600.jpeg',
-                'https://n25.mbqtj.org/media/7001/5f0be4f6dc2495171784de90/1117416_305965_1066_1600.jpeg',
-                'https://n28.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117418_356629_1066_1600.jpeg',
-                'https://k04.mbwww.org/media/7001/5f0be4f6dc2495171784de90/1117419_415370_1066_1600.jpeg',
-                'https://k06.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117420_432456_1066_1600.jpeg',
-                'https://n09.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117421_380639_1066_1600.jpeg',
-                'https://k02.mbopg.org/media/7001/5f0be4f6dc2495171784de90/1117422_359558_1066_1600.jpeg',
-                'https://n07.mbfpu.org/media/7001/5f0be4f6dc2495171784de90/1117424_314855_1066_1600.jpeg',
-                'https://n21.mbxma.org/media/7001/5f0be4f6dc2495171784de90/1117423_324457_1066_1600.jpeg',
-                'https://n18.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117425_280513_1066_1600.jpeg',
-                'https://k02.mbopg.org/media/7001/5f0be4f6dc2495171784de90/1117426_398590_1066_1600.jpeg',
-                'https://n18.mbtmv.org/media/7001/5f0be4f6dc2495171784de90/1117427_446555_1066_1600.jpeg',
-                'https://n23.mbwbm.org/media/7001/5f0be4f6dc2495171784de90/1117428_385082_1066_1600.jpeg',
-                'https://n25.mbwww.org/media/7001/5f0be4f6dc2495171784de90/1117429_233680_1066_1600.jpeg',
-                'https://n20.mbhiz.org/media/7001/5f0be4f6dc2495171784de90/1117430_364926_1066_1600.jpeg',
-                'https://n07.mbimg.org/media/7001/5f0be4f6dc2495171784de90/1117431_411729_1066_1600.jpeg',
-                'https://n07.mbzcp.org/media/7001/5f0be4f6dc2495171784de90/1117432_390391_1066_1600.jpeg',
-                'https://n21.mbzcp.org/media/7001/5f0be4f6dc2495171784de90/1117434_406387_1066_1600.jpeg',
-                'https://n26.mbcej.org/media/7001/5f0be4f6dc2495171784de90/1117433_323264_1066_1600.jpeg'
-            ],
-            'OPM-1_4': [
-                'https://n06.mbtmv.org/media/7001/5f0be615ce19df16db995c33/1117437_435227_1066_1600.jpeg',
-                'https://n15.mbqtj.org/media/7001/5f0be615ce19df16db995c33/1117436_300547_1066_1600.jpeg',
-                'https://n23.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117435_264958_1066_1600.jpeg',
-                'https://n26.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117440_436225_1066_1600.jpeg',
-                'https://n11.mbxma.org/media/7001/5f0be615ce19df16db995c33/1117438_383633_1066_1600.jpeg',
-                'https://n11.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117439_463219_1066_1600.jpeg',
-                'https://n28.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117441_333030_1066_1600.jpeg',
-                'https://n08.mbzcp.org/media/7001/5f0be615ce19df16db995c33/1117442_376060_1066_1600.jpeg',
-                'https://k04.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117444_333309_1066_1600.jpeg',
-                'https://k08.mbfpu.org/media/7001/5f0be615ce19df16db995c33/1117443_362945_1066_1600.jpeg',
-                'https://k07.mbmyj.org/media/7001/5f0be615ce19df16db995c33/1117447_463364_1066_1600.jpeg',
-                'https://n26.mbimg.org/media/7001/5f0be615ce19df16db995c33/1117445_306727_1066_1600.jpeg',
-                'https://n00.mbwbm.org/media/7001/5f0be615ce19df16db995c33/1117446_401334_1066_1600.jpeg',
-                'https://n16.mbtba.org/media/7001/5f0be615ce19df16db995c33/1117448_361850_1066_1600.jpeg',
-                'https://k04.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117450_459402_1066_1600.jpeg',
-                'https://n09.mbeaj.org/media/7001/5f0be615ce19df16db995c33/1117449_381755_1066_1600.jpeg',
-                'https://n12.mbxma.org/media/7001/5f0be615ce19df16db995c33/1117451_296230_1066_1600.jpeg',
-                'https://k06.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117452_476813_1066_1600.jpeg',
-                'https://n17.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117453_374264_1066_1600.jpeg',
-                'https://n07.mbdny.org/media/7001/5f0be615ce19df16db995c33/1117455_393255_1066_1600.jpeg',
-                'https://k00.mbznp.org/media/7001/5f0be615ce19df16db995c33/1117454_322442_1066_1600.jpeg',
-                'https://n22.mbrtz.org/media/7001/5f0be615ce19df16db995c33/1117457_301072_1066_1600.jpeg',
-                'https://n14.mbzcp.org/media/7001/5f0be615ce19df16db995c33/1117456_353275_1066_1600.jpeg',
-                'https://k08.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117458_383960_1066_1600.jpeg',
-                'https://n17.mbhiz.org/media/7001/5f0be615ce19df16db995c33/1117460_136829_1066_1600.jpeg',
-                'https://k08.mbdny.org/media/7001/5f0be615ce19df16db995c33/1117459_39530_1066_1600.jpeg'
             ]
         };
-
-        const STORY_INDEX = [OPM_DATA, TBD_DATA]; 
-        
-        // --- CUSTOM AUTH VÀ DATA LOGIC ---
-        const db = firebase.firestore(); 
 
         async function fetchUserByUsername(username) {
             try {
@@ -685,6 +633,7 @@
         }
         
         function getStoryData(storyId) {
+            // Lấy dữ liệu truyện từ mảng JS cố định
             return STORY_INDEX.find(s => s.id === storyId);
         }
 
@@ -693,16 +642,17 @@
             const detailThumbImg = document.getElementById('detail-thumb-img');
             const detailThumbText = document.getElementById('detail-thumb-text');
 
+
             if (!story) {
                 showCustomAlert("Truyện này không tồn tại.", "Lỗi 404!");
                 showPage('list');
                 return;
             }
-            
-            // --- KIỂM TRA TRUYỆN ĐANG CẬP NHẬT ---
+
+            // --- KIỂM TRA TRUYỆN ĐANG CẬP NHẬT (LỖI ĐÃ SỬA) ---
             if (story.maxChapters === 0) {
                  showCustomAlert("Truyện này đang cập nhật nội dung.", "Thông báo!");
-                 showPage('list');
+                 showPage('list'); // Quay lại trang danh sách
                  return;
             }
             
@@ -712,7 +662,7 @@
             document.getElementById('detail-genres').innerText = story.genres.join(', ');
             document.getElementById('detail-status').innerText = story.status;
 
-            // Xử lý hiển thị ảnh bìa hoặc chữ
+            // Xử lý hiển thị ảnh bìa (LỖI ĐÃ SỬA)
             if (story.thumb.startsWith('http')) {
                 detailThumbImg.src = story.thumb;
                 detailThumbImg.style.display = 'block';
@@ -743,7 +693,7 @@
         
         function startReading(chapterNum) {
              const storyId = currentStoryId;
-             // CHUYỂN HƯỚNG RA TRANG ĐỌC MỚI
+             // CHUYỂN HƯỚNG SANG FILE ĐỌC MỚI (LỖI ĐÃ SỬA)
              const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
              window.location.href = newUrl;
         }
@@ -847,10 +797,11 @@
                 grid.innerHTML += html;
             });
             
+             // Xử lý deep link (từ reader.html quay lại)
              if (window.location.hash.includes('#detail/')) {
                 const storyId = window.location.hash.split('/')[1];
                 showPage('detail', storyId);
-                window.location.hash = '';
+                window.location.hash = ''; // Xóa hash sau khi sử dụng
             }
         }
 
