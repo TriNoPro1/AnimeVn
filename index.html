@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truyện Tranh Hub Anime B1597</title>
+    <title>Truyện Tranh Hub Custom Auth</title>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
     <style>
@@ -447,8 +446,8 @@
             <div id="login-form">
                 <h2>Đăng nhập</h2>
                 <form onsubmit="handleLogin(event)">
-                    <label for="login-user"><b>Tên đăng nhập hoặc Email</b></label>
-                    <input type="text" placeholder="Nhập Tên đăng nhập hoặc Email" name="login-user" id="login-user" required> 
+                    <label for="login-user"><b>Tên đăng nhập</b></label>
+                    <input type="text" placeholder="Nhập Tên đăng nhập" name="login-user" id="login-user" required> 
 
                     <label for="login-psw"><b>Mật khẩu</b></label>
                     <input type="password" placeholder="Nhập Mật khẩu" name="login-psw" id="login-psw" required>
@@ -465,9 +464,6 @@
                 <form onsubmit="handleRegister(event)">
                     <label for="reg-username"><b>Tên đăng nhập (BẮT BUỘC)</b></label>
                     <input type="text" placeholder="Nhập Tên đăng nhập" name="reg-username" id="reg-username" required>
-
-                    <label for="reg-email"><b>Email (TÙY CHỌN)</b></label>
-                    <input type="email" placeholder="Nhập Email (để khôi phục mật khẩu)" name="reg-email" id="reg-email">
 
                     <label for="reg-psw"><b>Mật khẩu</b></label>
                     <input type="password" placeholder="Nhập Mật khẩu (tối thiểu 6 ký tự)" name="reg-psw" id="reg-psw" minlength="6" required>
@@ -491,6 +487,7 @@
     </div>
 
     <script>
+        // Cấu hình dự án của bạn (anime-b1597)
         const firebaseConfig = {
             apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
             authDomain: "anime-b1597.firebaseapp.com",
@@ -503,12 +500,46 @@
 
         firebase.initializeApp(firebaseConfig);
 
-        const auth = firebase.auth();
         const db = firebase.firestore();
         const storage = firebase.storage();
+        
+        // --- CUSTOM AUTH LOGIC (BỎ QUA FIREBASE AUTH) ---
+        
+        // --- HÀM XỬ LÝ DỮ LIỆU FIRESTORE CHO CUSTOM AUTH ---
 
-        let currentUserRole = 'reader'; 
-        const DUMMY_DOMAIN = "@truyentranh-hub.com"; 
+        async function fetchUserByUsername(username) {
+            try {
+                const snapshot = await db.collection("users").where("username", "==", username).limit(1).get();
+                if (!snapshot.empty) {
+                    const doc = snapshot.docs[0];
+                    return { uid: doc.id, ...doc.data() };
+                }
+                return null;
+            } catch (error) {
+                console.error("Lỗi truy vấn Firestore:", error);
+                showCustomAlert("Lỗi truy vấn", "Không thể kết nối Firestore để kiểm tra tài khoản. Kiểm tra quy tắc bảo mật.", "Lỗi hệ thống!");
+                return null;
+            }
+        }
+        
+        async function saveUser(username, password) {
+            try {
+                // Tạo ID ngẫu nhiên và lưu username, password, role trực tiếp vào Firestore
+                const docRef = await db.collection("users").add({
+                    username: username,
+                    password: password, 
+                    role: 'reader',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return { uid: docRef.id, username: username, role: 'reader' };
+            } catch (error) {
+                 console.error("Lỗi ghi Firestore:", error);
+                 showCustomAlert("Lỗi ghi dữ liệu", "Không thể tạo hồ sơ người dùng. Kiểm tra quyền GHI trong Firestore Rules.", "Lỗi hệ thống!");
+                 return null;
+            }
+        }
+
+        // --- HÀM UI VÀ HỘP THÔNG BÁO ---
 
         function showCustomAlert(message, title = "Thông báo") {
             document.getElementById('alert-title').innerText = title;
@@ -524,31 +555,16 @@
             setTimeout(() => { modal.style.display = 'none'; }, 300); 
         }
         
-        async function checkUserRole(uid) {
-            try {
-                const doc = await db.collection("users").doc(uid).get();
-                if (doc.exists && doc.data().role) {
-                    return doc.data().role;
-                }
-            } catch (error) {
-                console.error("Lỗi đọc vai trò từ Firestore:", error);
-            }
-            return 'reader'; 
-        }
-
-        async function updateAuthUI(user) {
-            const uploadButton = document.querySelector('#user-actions button:first-child');
+        function updateAuthUI(user) {
             const authButtons = document.getElementById('auth-buttons');
             const userActions = document.getElementById('user-actions');
 
             if (user) {
-                currentUserRole = await checkUserRole(user.uid);
                 authButtons.style.display = 'none';
                 userActions.style.display = 'block';
-
-                uploadButton.style.display = (currentUserRole === 'author') ? 'inline-block' : 'none';
+                document.querySelector('#user-actions button:first-child').style.display = 
+                    (user.role === 'author') ? 'inline-block' : 'none';
             } else {
-                currentUserRole = 'reader';
                 authButtons.style.display = 'block';
                 userActions.style.display = 'none';
                 showPage('list');
@@ -562,7 +578,8 @@
             if (pageId === 'list') {
                 document.getElementById('list-page').style.display = 'flex';
             } else if (pageId === 'upload') {
-                if (currentUserRole === 'author') {
+                const user = JSON.parse(localStorage.getItem('currentUserData'));
+                if (user && user.role === 'author') {
                     document.getElementById('upload-page').style.display = 'block';
                 } else {
                     showCustomAlert("Bạn không có quyền tác giả để truy cập chức năng này.", "Truy cập bị từ chối!");
@@ -591,129 +608,66 @@
             }
         }
 
+        // --- LOGIC ĐĂNG KÝ (CUSTOM) ---
+
         async function handleRegister(event) {
             event.preventDefault();
             const username = document.getElementById('reg-username').value;
-            let email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-psw').value;
 
-            try {
-                const existingUser = await db.collection("users").where("username", "==", username).limit(1).get();
-                if (!existingUser.empty) {
-                    showCustomAlert("Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.", "Đăng ký thất bại!");
-                    return;
-                }
-            } catch (error) {
-                 showCustomAlert("Lỗi kiểm tra tên đăng nhập. Vui lòng kiểm tra lại kết nối Firestore và Quy tắc bảo mật.", "Lỗi hệ thống!");
-                 console.error("Lỗi Firestore khi kiểm tra tên đăng nhập:", error);
-                 return;
+            const existingUser = await fetchUserByUsername(username);
+            if (existingUser) {
+                showCustomAlert("Tên đăng nhập này đã được sử dụng.", "Đăng ký thất bại!");
+                return;
             }
 
-            if (!email) {
-                email = `${username.toLowerCase()}${DUMMY_DOMAIN}`;
-            }
-
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                
-                await db.collection("users").doc(userCredential.user.uid).set({
-                    username: username,
-                    email: email,
-                    role: 'reader', 
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
+            const newUser = await saveUser(username, password);
+            
+            if (newUser) {
                 showCustomAlert("Đăng ký thành công! Vui lòng đăng nhập.", "Hoàn tất!");
+                document.getElementById('reg-username').value = '';
+                document.getElementById('reg-psw').value = '';
                 showForm('login');
-            } catch (error) {
-                showCustomAlert("Đăng ký không thành công! Lỗi: " + error.message, "Lỗi Firebase!");
-                console.error("Lỗi đăng ký Firebase Auth:", error);
             }
         }
+
+        // --- LOGIC ĐĂNG NHẬP (CUSTOM) ---
 
         async function handleLogin(event) {
             event.preventDefault();
-            const input = document.getElementById('login-user').value;
+            const username = document.getElementById('login-user').value;
             const password = document.getElementById('login-psw').value;
-            let loginEmail = input;
 
-            if (!input.includes('@')) {
-                try {
-                    const snapshot = await db.collection("users").where("username", "==", input).limit(1).get();
-                    if (snapshot.empty) {
-                        showCustomAlert("Tên đăng nhập hoặc Email không tồn tại.", "Đăng nhập thất bại!");
-                        return;
-                    }
-                    loginEmail = snapshot.docs[0].data().email; 
-                } catch (error) {
-                    showCustomAlert("Lỗi tìm kiếm tên đăng nhập.", "Lỗi!");
-                    return;
-                }
-            }
-            
-            try {
-                await auth.signInWithEmailAndPassword(loginEmail, password);
+            const user = await fetchUserByUsername(username);
+
+            if (user && user.password === password) {
+                localStorage.setItem('currentUserData', JSON.stringify(user));
                 closeModal();
                 showCustomAlert(`Đăng nhập thành công!`, "Hoàn tất!");
-            } catch (error) {
-                showCustomAlert("Sai Tên đăng nhập/Email hoặc Mật khẩu.", "Đăng nhập thất bại!");
-                console.error("Lỗi đăng nhập:", error);
+                checkLoginStatus();
+            } else {
+                showCustomAlert("Sai Tên đăng nhập hoặc Mật khẩu.", "Đăng nhập thất bại!");
             }
         }
 
-        async function logout() {
-            try {
-                await auth.signOut();
-                showCustomAlert("Đã đăng xuất thành công.", "Hoàn tất!");
-            } catch (error) {
-                showCustomAlert("Lỗi đăng xuất.", "Lỗi!");
-            }
+        function logout() {
+            localStorage.removeItem('currentUserData');
+            showCustomAlert("Đã đăng xuất thành công.", "Hoàn tất!");
+            checkLoginStatus();
         }
+
+        // --- LOGIC TẢI TRUYỆN (Sử dụng dữ liệu Local Storage) ---
 
         async function handleUpload(event) {
             event.preventDefault();
             
-            if (currentUserRole !== 'author') {
+            const userData = JSON.parse(localStorage.getItem('currentUserData'));
+            if (!userData || userData.role !== 'author') {
                 showCustomAlert("Lỗi: Bạn không có quyền tác giả để tải truyện.", "Truy cập bị từ chối!");
                 return;
             }
-
-            const title = document.getElementById('title').value;
-            const genre = document.getElementById('genre').value;
-            const description = document.getElementById('description').value;
-            const coverFile = document.getElementById('cover-image').files[0];
-            const chapterFiles = document.getElementById('chapter-files').files;
-
-            try {
-                const user = auth.currentUser;
-                
-                const coverRef = storage.ref(`covers/${user.uid}/${Date.now()}_${coverFile.name}`);
-                const coverSnapshot = await coverRef.put(coverFile);
-                const coverUrl = await coverSnapshot.ref.getDownloadURL();
-
-                const newStoryRef = await db.collection("stories").add({
-                    title: title,
-                    genre: genre,
-                    description: description,
-                    coverUrl: coverUrl,
-                    authorUid: user.uid,
-                    status: 'active',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                for (const file of chapterFiles) {
-                    const chapterRef = storage.ref(`chapters/${newStoryRef.id}/${file.name}`);
-                    await chapterRef.put(file);
-                }
-                
-                showCustomAlert(`Tải truyện "${title}" thành công! Truyện đã được thêm vào Firestore.`, "Tải lên thành công!");
-                event.target.reset(); 
-                showPage('list'); 
-
-            } catch (error) {
-                console.error("Lỗi tải truyện lên:", error);
-                showCustomAlert("Lỗi tải truyện lên: Vui lòng kiểm tra console.", "Lỗi!");
-            }
+            
+            showCustomAlert("Chức năng tải truyện bị vô hiệu hóa vì yêu cầu Firebase Storage.", "Lỗi chức năng!");
         }
         
         function loadStories() {
@@ -746,12 +700,21 @@
                 }
             }, (error) => {
                 console.error("Lỗi tải truyện:", error);
-                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối Firestore. Vui lòng kiểm tra lại cấu hình Firebase và API Key.</p>';
+                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối Firestore. Vui lòng kiểm tra lại cấu hình Firebase và Quy tắc bảo mật.</p>';
             });
         }
 
-        auth.onAuthStateChanged(updateAuthUI);
-        document.addEventListener('DOMContentLoaded', loadStories);
+        function checkLoginStatus() {
+            const userData = localStorage.getItem('currentUserData');
+            if (userData) {
+                const user = JSON.parse(userData);
+                updateAuthUI(user);
+            } else {
+                updateAuthUI(null);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', checkLoginStatus);
     </script>
 </body>
 </html>
