@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đang đọc truyện | Chương X</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <style>
         :root {
             --primary-color: #e74c3c;
@@ -17,8 +19,8 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #333; 
-            color: white;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.6;
         }
 
@@ -37,7 +39,7 @@
             margin: 20px auto;
             max-width: 900px;
             padding: 10px;
-            background-color: #444;
+            background-color: #333;
             border-radius: 5px;
         }
 
@@ -106,14 +108,11 @@
     </div>
 
     <script>
-        let currentStoryId = null;
-        let currentChapterNum = 0;
-
         // --- DỮ LIỆU CỐ ĐỊNH (PHẢI GIỐNG index.html) ---
         const OPM_DATA = {
             id: 'OPM-1',
             title: 'One Punch Man (Mùa 1)',
-            maxChapters: 4 
+            maxChapters: 2 
         };
         
         const TBD_DATA = {
@@ -124,37 +123,17 @@
 
         const STORY_INDEX = [OPM_DATA, TBD_DATA]; 
         
-        // DỮ LIỆU CHƯƠNG TRUYỆN (HARDCODED)
         const CHAPTER_DATA = {
             'OPM-1_1': [
-                'https://n06.mbtmv.org/media/7001/5f0be060c104d916e306f98f/1117331_236386_1066_1600.jpeg',
-                'https://n27.mbfpu.org/media/7001/5f0be060c104d916e306f98f/1117332_200838_1066_1600.jpeg',
-                'https://k09.mbtba.org/media/7001/5f0be060c104d916e306f98f/1117334_88905_1066_1600.jpeg',
-                'https://n07.mbuul.org/media/7001/5f0be060c104d916e306f98f/1117336_272057_1066_1600.jpeg',
-                'https://k01.mbimg.org/media/7001/5f0be060c104d916e306f98f/1117335_317482_1066_1600.jpeg',
-                'https://n09.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117337_163062_1066_1600.jpeg',
-                'https://n30.mbeaj.org/media/7001/5f0be060c104d916e306f98f/1117338_448039_1066_1600.jpeg',
-                'https://n10.mbwnp.org/media/7001/5f0be060c104d916e306f98f/1117340_412151_1066_1600.jpeg',
-                'https://n27.mbxma.org/media/7001/5f0be060c104d916e306f98f/1117339_405531_1066_1600.jpeg',
-                'https://n21.mbtba.org/media/7001/5f0be060c104d916e306f98f/1117342_369288_1066_1600.jpeg',
-                'https://k03.mbqgu.org/media/7001/5f0be060c104d916e306f98f/1117341_427657_1066_1600.jpeg',
-                'https://n19.mbrtz.org/media/7001/5f0be060c104d916e306f98f/1117343_252995_1066_1600.jpeg',
-                'https://n16.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117344_154187_1066_1600.jpeg',
-                'https://n29.mbqtj.org/media/7001/5f0be060c104d916e306f98f/1117345_373276_1066_1600.jpeg',
-                'https://n16.mbcej.org/media/7001/5f0be060c104d916e306f98f/1117346_309208_1066_1600.jpeg',
-                'https://n17.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117347_397870_1066_1600.jpeg',
-                'https://n01.mbimg.org/media/7001/5f0be060c104d916e306f98f/1117349_319887_1066_1600.jpeg',
-                'https://n25.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117348_214168_1066_1600.jpeg',
-                'https://n14.mbmyj.org/media/7001/5f0be060c104d916e306f98f/1117350_234095_1066_1600.jpeg',
-                'https://n06.mbcej.org/media/7001/5f0be060c104d916e306f98f/1117351_231373_1066_1600.jpeg',
-                'https://k06.mbzcp.org/media/7001/5f0be060c104d916e306f98f/1117352_399342_1066_1600.jpeg',
-                'https://k00.mbmyj.org/media/7001/5f0be060c104d916e306f98f/1117353_369161_1066_1600.jpeg',
-                'https://n06.mbeaj.org/media/7001/5f0be060c104d916e306f98f/1117354_334637_1066_1600.jpeg',
-                'https://n24.mbdny.org/media/7001/5f0be060c104d916e306f98f/1117355_497615_1066_1600.jpeg',
-                'https://n28.mbxma.org/media/7001/5f0be060c104d916e306f98f/1117356_372710_1066_1600.jpeg',
-                'https://k09.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117357_285956_1066_1600.jpeg',
-                'https://n28.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117358_356588_1066_1600.jpeg',
-                'https://n28.mbhiz.org/media/7001/5f0be060c104d916e306f98f/1117358_356588_1066_1600.jpeg'
+                'https://i125.truyenvua.com/244/1.0/3.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/4.jpeg?d=dfgd6546', 
+                'https://i125.truyenvua.com/244/1.0/5.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/6.jpeg?d=dfgd6546',
+                'https://i125.truyenvua.com/244/1.0/7.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/8.jpeg?d=dfgd6546',
+                'https://i125.truyenvua.com/244/1.0/9.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/10.jpeg?d=dfgd6546',
+                'https://i125.truyenvua.com/244/1.0/11.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/12.jpeg?d=dfgd6546',
+                'https://i125.truyenvua.com/244/1.0/13.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/14.jpeg?d=dfgd6546',
+                'https://i125.truyenvua.com/244/1.0/15.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/16.jpeg?d=dfgd6546',
+                'https://i125.truyenvua.com/244/1.0/17.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/18.jpeg?d=dfgd6546',
+                'https://i125.truyenvua.com/244/1.0/19.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/20.jpeg?d=dfgd6546'
             ],
             'OPM-1_2': [
                 'https://k00.mbwnp.org/media/7001/5f0be15958fe5316c1c971df/1117361_384341_1066_1600.jpeg',
