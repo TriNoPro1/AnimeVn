@@ -220,7 +220,9 @@
 
         .modal-content input[type="text"],
         .modal-content input[type="email"],
-        .modal-content input[type="password"] {
+        .modal-content input[type="password"],
+        .modal-content textarea,
+        .modal-content select {
             width: 100%;
             padding: 12px;
             margin: 8px 0 15px 0;
@@ -278,6 +280,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             border-radius: 8px;
             overflow: hidden;
+            position: relative;
         }
 
         .detail-thumb img {
@@ -286,20 +289,17 @@
             display: block;
         }
 
+        .detail-thumb .cover-placeholder {
+             /* Dùng lại CSS này để hiển thị placeholder chữ */
+             width: 100%;
+             height: 350px; /* Điều chỉnh chiều cao phù hợp */
+        }
+
+
         .detail-info h1 {
             color: var(--primary-color);
             margin-top: 0;
             font-size: 2em;
-        }
-
-        .detail-info .tags span {
-            display: inline-block;
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 4px;
-            margin-right: 8px;
-            font-size: 0.9em;
         }
 
         .chapter-list-container {
@@ -379,7 +379,8 @@
         <div id="detail-page" class="page-view" style="display: none;">
             <div class="detail-header">
                 <div class="detail-thumb">
-                    <img id="detail-thumb-img" src="" alt="Ảnh bìa">
+                    <img id="detail-thumb-img" src="" alt="Ảnh bìa" style="display:none;">
+                    <div id="detail-thumb-text" class="cover-placeholder text-only" style="display:none;"></div>
                 </div>
                 <div class="detail-info">
                     <h1 id="detail-title"></h1>
@@ -467,6 +468,7 @@
     </div>
 
     <script>
+        // Cần setup Firebase Config của bạn tại đây
         const firebaseConfig = {
             apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
             authDomain: "anime-b1597.firebaseapp.com",
@@ -630,29 +632,48 @@
             window.scrollTo(0, 0);
         }
         
+        function getStoryData(storyId) {
+            // Lấy dữ liệu truyện từ mảng JS cố định
+            return STORY_INDEX.find(s => s.id === storyId);
+        }
+
         async function renderDetailPage(storyId) {
             const story = getStoryData(storyId);
+            const detailThumbImg = document.getElementById('detail-thumb-img');
+            const detailThumbText = document.getElementById('detail-thumb-text');
+
 
             if (!story) {
                 showCustomAlert("Truyện này không tồn tại.", "Lỗi 404!");
                 showPage('list');
                 return;
             }
-            
+
+            // --- KIỂM TRA TRUYỆN ĐANG CẬP NHẬT (LỖI ĐÃ SỬA) ---
             if (story.maxChapters === 0) {
                  showCustomAlert("Truyện này đang cập nhật nội dung.", "Thông báo!");
-                 showPage('list');
+                 showPage('list'); // Quay lại trang danh sách
                  return;
             }
-
+            
+            // --- CẬP NHẬT THÔNG TIN TRANG CHI TIẾT ---
             document.getElementById('detail-title').innerText = story.title;
-            document.getElementById('detail-thumb-img').src = story.thumb;
-            document.getElementById('detail-thumb-img').style.display = story.thumb.length > 5 ? 'block' : 'none';
-
             document.getElementById('detail-description').innerText = story.description;
             document.getElementById('detail-genres').innerText = story.genres.join(', ');
             document.getElementById('detail-status').innerText = story.status;
 
+            // Xử lý hiển thị ảnh bìa (LỖI ĐÃ SỬA)
+            if (story.thumb.startsWith('http')) {
+                detailThumbImg.src = story.thumb;
+                detailThumbImg.style.display = 'block';
+                detailThumbText.style.display = 'none';
+            } else {
+                detailThumbText.innerText = story.thumb;
+                detailThumbText.style.display = 'flex';
+                detailThumbImg.style.display = 'none';
+            }
+
+            // Bắt sự kiện cho nút BẮT ĐẦU ĐỌC
             document.getElementById('startReadingBtn').onclick = () => startReading(1);
 
             const chapterGrid = document.getElementById('chapter-list-grid');
@@ -672,6 +693,7 @@
         
         function startReading(chapterNum) {
              const storyId = currentStoryId;
+             // CHUYỂN HƯỚNG SANG FILE ĐỌC MỚI (LỖI ĐÃ SỬA)
              const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
              window.location.href = newUrl;
         }
@@ -756,7 +778,7 @@
             grid.innerHTML = '';
             
             STORY_INDEX.forEach(story => {
-                const isTextOnly = story.thumb.length <= 5; 
+                const isTextOnly = !story.thumb.startsWith('http'); 
                 const coverStyle = isTextOnly ? '' : `background-image: url('${story.thumb}');`;
                 const textClass = isTextOnly ? 'text-only' : '';
                 const thumbContent = isTextOnly ? `<span>${story.thumb}</span>` : '';
@@ -774,6 +796,13 @@
                 `;
                 grid.innerHTML += html;
             });
+            
+             // Xử lý deep link (từ reader.html quay lại)
+             if (window.location.hash.includes('#detail/')) {
+                const storyId = window.location.hash.split('/')[1];
+                showPage('detail', storyId);
+                window.location.hash = ''; // Xóa hash sau khi sử dụng
+            }
         }
 
         function checkLoginStatus() {
