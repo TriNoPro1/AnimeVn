@@ -503,8 +503,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
 
     <script>
-        // --- CHÚ Ý QUAN TRỌNG: BẠN PHẢI THAY THẾ CẤU HÌNH NÀY BẰNG CẤU HÌNH DỰ ÁN THẬT CỦA BẠN ---
-        // LỖI API KEY INVALID CỦA BẠN NẰM Ở VIỆC THÔNG TIN DƯỚI ĐÂY KHÔNG CHÍNH XÁC.
+        // --- CHÚ Ý QUAN TRỌNG: LỖI API KEY CỦA BẠN NẰM Ở ĐÂY. BẠN PHẢI THAY THẾ CẤU HÌNH NÀY BẰNG CẤU HÌNH DỰ ÁN THẬT CỦA BẠN ---
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY", 
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -644,7 +643,7 @@
                 showCustomAlert("Đăng ký thành công! Vui lòng đăng nhập.", "Hoàn tất!");
                 showForm('login');
             } catch (error) {
-                showCustomAlert("Lỗi đăng ký: Vui lòng kiểm tra lại thông tin.", "Lỗi!");
+                showCustomAlert("Đăng ký không thành công! Vui lòng kiểm tra API Key và đảm bảo Email/Password đã được bật trong Firebase Auth.", "Lỗi!");
                 console.error("Lỗi đăng ký:", error);
             }
         }
@@ -772,7 +771,7 @@
                 }
             }, (error) => {
                 console.error("Lỗi tải truyện:", error);
-                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối Firestore. Vui lòng kiểm tra lại cấu hình Firebase và API Key.</p>';
+                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối Firestore. Vui lòng kiểm tra lại cấu hình Firebase và API Key.</p>.</p>';
             });
         }
 
