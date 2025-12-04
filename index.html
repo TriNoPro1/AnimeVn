@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truyện Tranh Hub Anime B1597</title>
+    <title>Truyện Tranh Hub OPM S1</title>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
@@ -361,8 +361,20 @@
         .alert-content button:hover {
             background-color: #2980b9;
         }
+
+        @media (max-width: 900px) {
+            .header {
+                padding: 15px 20px;
+            }
+            .main-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                margin-bottom: 0;
+            }
+        }
         
-        /* LAYOUT TRANG CHI TIẾT */
         .detail-header {
             display: flex;
             gap: 30px;
@@ -439,7 +451,6 @@
             color: white;
         }
         
-        /* LAYOUT TRANG ĐỌC */
         .reader-content {
             text-align: center;
             background-color: var(--card-bg);
@@ -535,7 +546,7 @@
             <div class="chapter-list-container">
                 <h3>DANH SÁCH CÁC CHƯƠNG</h3>
                 <div class="chapter-grid" id="chapter-list-grid">
-                    </div>
+                </div>
             </div>
         </div>
 
@@ -546,7 +557,7 @@
                 <button onclick="changeChapter(1)">Chương Sau →</button>
             </div>
             <div class="reader-content" id="reader-image-content">
-                </div>
+            </div>
             <div class="reader-nav" style="margin-bottom: 20px;">
                 <button onclick="showPage('list')">Về Trang Chủ</button>
                 <button onclick="showPage('detail', currentStoryId)">Về Trang Chi Tiết</button>
@@ -649,14 +660,38 @@
         
         let currentStoryId = null;
         let currentChapter = 1;
-        const DUMMY_STORY = {
-            id: 'OPM-3',
-            title: 'One Punch Man 3',
+
+        const OPM_DATA = {
+            id: 'OPM-1',
+            title: 'One Punch Man (Mùa 1)',
             thumb: 'https://cdn.animevn.net/images/thumbs/one-punch-man-3.jpg',
-            genres: ['Anime', 'Hành Động', 'Hài Hước', 'Siêu Năng lực'],
-            description: 'Xem phim anime One Punch Man 3 Vietsub với chất lượng tốt nhất tại AnimeVN. Mùa 3 của One Punch Man',
-            maxChapters: 8
+            genres: ['Hành Động', 'Hài Hước', 'Siêu Năng lực'],
+            description: 'Manga kể về Saitama, một siêu anh hùng trở nên quá mạnh mẽ đến nỗi có thể đánh bại bất kỳ đối thủ nào chỉ bằng một cú đấm duy nhất. Vì vậy, anh phải đối mặt với một cuộc khủng hoảng: không có đối thủ xứng tầm, anh không còn cảm thấy sự hồi hộp khi chiến đấu.',
+            maxChapters: 1
         };
+        
+        // Dữ liệu Chương 1 OPM (18 ảnh)
+        const OPM_CHAPTER_1_PAGES = [
+            'https://i125.truyenvua.com/244/1.0/3.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/4.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/5.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/6.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/7.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/8.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/9.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/10.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/11.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/12.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/13.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/14.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/15.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/16.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/17.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/18.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/19.jpeg?d=dfgd6546',
+            'https://i125.truyenvua.com/244/1.0/20.jpeg?d=dfgd6546'
+        ];
+
 
         async function fetchUserByUsername(username) {
             try {
@@ -744,9 +779,16 @@
             window.scrollTo(0, 0);
         }
         
-        function renderDetailPage(storyId) {
-            const story = DUMMY_STORY; 
-
+        async function renderDetailPage(storyId) {
+            // Tải dữ liệu truyện từ Firestore
+            const storyDoc = await db.collection("stories").doc(storyId).get();
+            if (!storyDoc.exists) {
+                showCustomAlert("Truyện này không tồn tại.", "Lỗi 404!");
+                showPage('list');
+                return;
+            }
+            const story = storyDoc.data();
+            
             document.getElementById('detail-title').innerText = story.title;
             document.getElementById('detail-thumb-img').src = story.thumb;
             document.getElementById('detail-description').innerText = story.description;
@@ -754,7 +796,7 @@
 
             const chapterGrid = document.getElementById('chapter-list-grid');
             chapterGrid.innerHTML = ''; 
-
+            
             for (let i = story.maxChapters; i >= 1; i--) {
                 const chapterLink = document.createElement('a');
                 chapterLink.href = `#chapter${i}`;
@@ -767,8 +809,16 @@
             }
         }
         
-        function startReading(chapterNum) {
-            const story = DUMMY_STORY;
+        async function startReading(chapterNum) {
+            // Tải URL ảnh của chương từ Firestore
+            const chapterDoc = await db.collection("chapters").doc(`${currentStoryId}_${chapterNum}`).get();
+            if (!chapterDoc.exists) {
+                showCustomAlert(`Chương ${chapterNum} chưa có dữ liệu.`, "Lỗi đọc truyện!");
+                return;
+            }
+            const chapterData = chapterDoc.data();
+            const story = (await db.collection("stories").doc(currentStoryId).get()).data();
+            
             currentChapter = chapterNum;
             
             document.getElementById('reader-current-chapter').innerText = `${story.title} - Chương ${currentChapter}`;
@@ -776,32 +826,34 @@
             const contentDiv = document.getElementById('reader-image-content');
             contentDiv.innerHTML = '';
             
-            // Mô phỏng tải 4 trang ảnh
-            for (let i = 1; i <= 4; i++) {
+            chapterData.pageUrls.forEach(url => {
                 const img = document.createElement('img');
-                img.src = `https://via.placeholder.com/800x1200?text=${story.title}+Chap+${currentChapter}+Page+${i}`;
-                img.alt = `Trang ${i}`;
+                img.src = url;
+                img.alt = `Trang truyện`;
                 contentDiv.appendChild(img);
-            }
+            });
+
             showPage('reader');
-            updateNavButtons();
+            updateNavButtons(story.maxChapters);
         }
 
-        function updateNavButtons() {
-            const story = DUMMY_STORY;
+        function updateNavButtons(maxChapters) {
             document.querySelectorAll('.reader-nav button').forEach(btn => {
                 if (btn.innerText.includes('Chương Trước')) {
                     btn.disabled = (currentChapter <= 1);
                 } else if (btn.innerText.includes('Chương Sau')) {
-                    btn.disabled = (currentChapter >= story.maxChapters);
+                    btn.disabled = (currentChapter >= maxChapters);
                 }
             });
         }
         
         function changeChapter(direction) {
-            const story = DUMMY_STORY;
             const newChapter = currentChapter + direction;
-            if (newChapter >= 1 && newChapter <= story.maxChapters) {
+            // DUMMY_STORY.maxChapters sẽ được thay thế bằng giá trị thực từ Firestore
+            // Hiện tại dùng OPM_DATA.maxChapters
+            const maxChapters = OPM_DATA.maxChapters; 
+            
+            if (newChapter >= 1 && newChapter <= maxChapters) {
                 startReading(newChapter);
             } else {
                 showCustomAlert(direction > 0 ? "Đây là chương cuối cùng!" : "Đây là chương đầu tiên!", "Thông báo!");
@@ -873,29 +925,30 @@
 
         async function handleUpload(event) {
             event.preventDefault();
-            
-            const userData = JSON.parse(localStorage.getItem('currentUserData'));
-            if (!userData || userData.role !== 'author') {
-                showCustomAlert("Lỗi: Bạn không có quyền tác giả để tải truyện.", "Truy cập bị từ chối!");
-                return;
-            }
-            
             showCustomAlert("Chức năng tải truyện bị vô hiệu hóa vì yêu cầu Firebase Storage.", "Lỗi chức năng!");
         }
         
-        function loadStories() {
+        async function loadStories() {
             const grid = document.getElementById('story-list-grid');
             grid.innerHTML = '';
             
-            // MÔ PHỎNG DỮ LIỆU TỪ FIREBASE ĐỂ HIỂN THỊ TRANG LIST
+            // Lệnh chỉ tải OPM-1
+            const storyDoc = await db.collection("stories").doc(OPM_DATA.id).get();
+            
+            if (!storyDoc.exists) {
+                grid.innerHTML = '<p style="text-align: center;">Vui lòng chạy lệnh <code>createOPMChapter1Data()</code> trong Console để tạo dữ liệu mẫu.</p>';
+                return;
+            }
+            
+            const story = storyDoc.data();
             const html = `
-                <div class="story-item" onclick="showPage('detail', 'OPM-3')">
-                    <div class="cover-placeholder" style="background-image: url('${DUMMY_STORY.thumb}'); background-size: cover; background-position: center; color: white;">
-                        <span style="font-size: 1.1em;">${DUMMY_STORY.title}</span>
+                <div class="story-item" onclick="showPage('detail', '${story.id}')">
+                    <div class="cover-placeholder" style="background-image: url('${story.thumb}'); background-size: cover; background-position: center; color: white;">
+                        <span style="font-size: 1.1em;">${story.title}</span>
                     </div>
                     <div class="story-info">
-                        <h4>${DUMMY_STORY.title}</h4>
-                        <p>Tập mới nhất: ${DUMMY_STORY.maxChapters}</p>
+                        <h4>${story.title}</h4>
+                        <p>Tập mới nhất: ${story.maxChapters}</p>
                     </div>
                 </div>
             `;
@@ -912,6 +965,38 @@
             }
         }
 
+        // --- HÀM TẠO DỮ LIỆU MẪU CHƯƠNG 1 OPM ---
+        async function createOPMChapter1Data() {
+             const storyId = OPM_DATA.id;
+             const chapterNum = 1;
+
+             try {
+                 // 1. Tạo hoặc cập nhật thông tin truyện
+                 await db.collection("stories").doc(storyId).set({
+                     id: storyId,
+                     title: OPM_DATA.title,
+                     thumb: OPM_DATA.thumb,
+                     genres: OPM_DATA.genres,
+                     description: OPM_DATA.description,
+                     maxChapters: chapterNum 
+                 }, { merge: true });
+
+                 // 2. Lưu URL chương 1
+                 await db.collection("chapters").doc(`${storyId}_${chapterNum}`).set({
+                     storyId: storyId,
+                     chapter: chapterNum,
+                     pageUrls: OPM_CHAPTER_1_PAGES,
+                     pageCount: OPM_CHAPTER_1_PAGES.length
+                 });
+
+                 showCustomAlert("Tạo dữ liệu OPM thành công! F5 trang để xem truyện.", "Hoàn tất!");
+                 console.log("Dữ liệu truyện và chương 1 đã được tạo trong Firestore.");
+             } catch (error) {
+                 showCustomAlert("LỖI GHI DỮ LIỆU. Kiểm tra Cấu hình Firebase (API Key) và Quy tắc Bảo mật.", "Lỗi nghiêm trọng!");
+                 console.error("Lỗi tạo dữ liệu mẫu:", error);
+             }
+        }
+        
         document.addEventListener('DOMContentLoaded', () => {
             checkLoginStatus();
             loadStories(); 
