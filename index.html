@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truyện Tranh Thủ Công | KHÔNG FIREBASE</title>
+    <title>Truyện Tranh Hub | Trang Chính</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
     <style>
         :root {
-            --primary-color: #008080;
-            --secondary-color: #2c3e50;
+            --primary-color: #e74c3c;
+            --secondary-color: #3498db;
             --text-color: #2c3e50;
-            --bg-color: #f0f8ff;
+            --bg-color: #ecf0f1;
             --card-bg: #ffffff;
             --border-color: #bdc3c7;
         }
@@ -23,8 +27,14 @@
             line-height: 1.6;
         }
 
-        a {text-decoration: none;color: inherit;}
-        button {cursor: pointer;}
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
 
         .header {
             background-color: var(--primary-color);
@@ -36,7 +46,24 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
-        .header h1 a {color: white;font-size: 1.8em;}
+        .header h1 a {
+            color: white;
+            font-size: 1.8em;
+        }
+
+        .auth-buttons button {
+            background: none;
+            border: 1px solid white;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-left: 10px;
+            transition: background-color 0.2s;
+        }
+        .auth-buttons button:hover {
+            background-color: white;
+            color: var(--primary-color);
+        }
 
         .container {
             width: 95%;
@@ -44,13 +71,67 @@
             margin: 20px auto;
         }
         
-        .main-layout {display: flex;gap: 30px;padding: 20px 0;}
-        .sidebar {width: 250px;background-color: var(--card-bg);padding: 20px;border-radius: 10px;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);height: fit-content;}
-        .main-content {flex: 1;}
+        .main-layout {
+            display: flex;
+            gap: 30px;
+            padding: 20px 0;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
 
-        .story-grid {display: grid;grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));gap: 25px;padding: 10px 0;}
-        .story-item {background-color: var(--card-bg);border-radius: 10px;overflow: hidden;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);transition: transform 0.3s;cursor: pointer;}
-        .story-item:hover {transform: translateY(-8px);box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);}
+        .main-content {
+            flex: 1;
+        }
+
+        .genre-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .genre-list li a {
+            display: block;
+            padding: 10px 0;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        .genre-list li:last-child a {
+            border-bottom: none;
+        }
+
+        .genre-list li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            padding: 10px 0;
+        }
+
+        .story-item {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .story-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
 
         .cover-placeholder {
             width: 100%;
@@ -68,28 +149,195 @@
             background-position: center;
         }
 
-        .cover-placeholder.text-only {background-color: #333;font-size: 3em;}
+        .cover-placeholder.text-only {
+            background-color: #333;
+            font-size: 3em;
+        }
 
-        .story-info {padding: 15px;}
-        .story-info h4 {margin: 0 0 5px 0;font-size: 1.1em;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;color: var(--text-color);}
-        .story-info p {margin: 0;color: #7f8c8d;font-size: 0.9em;}
+        .story-info {
+            padding: 15px;
+        }
 
-        /* TRANG CHI TIẾT */
-        .detail-header {display: flex;gap: 30px;background-color: var(--card-bg);padding: 20px;border-radius: 10px;box-shadow: 0 4px 8px rgba(0,0,0,0.1);margin-bottom: 20px;}
-        .detail-thumb {width: 250px;flex-shrink: 0;box-shadow: 0 4px 8px rgba(0,0,0,0.2);border-radius: 8px;overflow: hidden;}
-        .detail-thumb img {width: 100%;height: auto;display: block;}
-        .detail-info h1 {color: var(--primary-color);margin-top: 0;font-size: 2em;}
-        .chapter-list-container {background-color: var(--card-bg);padding: 20px;border-radius: 10px;box-shadow: 0 4px 8px rgba(0,0,0,0.1);}
-        .chapter-list-container h3 {border-bottom: 2px solid var(--primary-color);padding-bottom: 10px;margin-top: 0;}
-        .chapter-grid {display: grid;grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));gap: 10px;margin-top: 15px;}
-        .chapter-grid a {display: block;text-align: center;background-color: #eee;padding: 10px 5px;border-radius: 5px;font-weight: bold;border: 1px solid #ddd;transition: background-color 0.2s, color 0.2s;}
-        .chapter-grid a:hover {background-color: var(--primary-color);color: white;}
-        .reader-content {text-align: center;background-color: var(--card-bg);padding: 20px;border-radius: 10px;box-shadow: 0 4px 8px rgba(0,0,0,0.1);}
-        .reader-content img {max-width: 100%;height: auto;margin-bottom: 10px;display: block;margin: 10px auto;box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);}
-        .reader-nav {display: flex;justify-content: space-between;margin-top: 20px;padding: 10px;background-color: #333;border-radius: 5px;}
-        .reader-nav button {padding: 10px 20px;background-color: var(--secondary-color);color: white;border-radius: 5px;font-weight: bold;}
+        .story-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-color);
+        }
 
-        /* Custom Alert */
+        .story-info p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            color: var(--border-color);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+        }
+
+        .modal-content input[type="text"],
+        .modal-content input[type="email"],
+        .modal-content input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 15px 0;
+            display: inline-block;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .modal-content button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.2s;
+        }
+
+        .modal-content button:hover {
+            background-color: #c0392b;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .switch-form a {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .upload-dashboard h2 {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .detail-header {
+            display: flex;
+            gap: 30px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .detail-thumb {
+            width: 250px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .detail-thumb img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .detail-info h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 2em;
+        }
+
+        .detail-info .tags span {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 0.9em;
+        }
+
+        .chapter-list-container {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .chapter-list-container h3 {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .chapter-grid a {
+            display: block;
+            text-align: center;
+            background-color: #eee;
+            padding: 10px 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .chapter-grid a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
         #custom-alert {
             position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: rgba(0, 0, 0, 0.7);z-index: 2000;display: none;justify-content: center;align-items: center;opacity: 0;transition: opacity 0.3s ease-out;
         }
@@ -102,6 +350,14 @@
 
     <div class="header">
         <h1><a href="#" onclick="showPage('list')">Truyện Tranh Thủ Công 🚀</a></h1>
+        <div class="auth-buttons" id="auth-buttons">
+            <button onclick="openModal('login')">Đăng nhập</button>
+            <button onclick="openModal('register')">Đăng ký</button>
+        </div>
+        <div class="auth-buttons" id="user-actions" style="display: none;">
+            <button onclick="showPage('upload')">Bảng điều khiển ⚙️</button> 
+            <button onclick="logout()">Đăng xuất</button>
+        </div>
     </div>
 
     <div class="container">
@@ -142,9 +398,66 @@
             </div>
         </div>
 
+        <div id="upload-page" class="page-view" style="display: none;">
+            <div class="upload-dashboard">
+                <h2>⬆️ Tải Truyện Lên Web</h2>
+                <p>Khu vực này chỉ hiển thị khi tài khoản của bạn có vai trò tác giả ('author').</p>
+                
+                <form onsubmit="handleUpload(event)">
+                    <label for="title">Tên Truyện:</label>
+                    <input type="text" id="title" name="title" required placeholder="Ví dụ: Tên Truyện Mới">
+                    <label for="genre">Thể loại:</label>
+                    <select id="genre" name="genre">
+                        <option value="Action">Hành Động</option>
+                        <option value="Comedy">Hài Hước</option>
+                    </select>
+                    <label for="description">Mô tả tóm tắt:</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Nhập mô tả về nội dung truyện..."></textarea>
+                    <label for="cover-image">Ảnh Bìa (Cover Image):</label>
+                    <input type="file" id="cover-image" name="cover-image" accept="image/*" required>
+                    <label for="chapter-files">Các Tập Truyện (Files/Images):</label>
+                    <input type="file" id="chapter-files" name="chapter-files" accept="image/*,.zip" multiple required>
+                    <button type="submit">Đăng Tải Truyện Mới</button>
+                </form>
+            </div>
         </div>
+    </div>
 
 
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            
+            <div id="login-form">
+                <h2>Đăng nhập</h2>
+                <form onsubmit="handleLogin(event)">
+                    <label for="login-user"><b>Tên đăng nhập</b></label>
+                    <input type="text" placeholder="Nhập Tên đăng nhập" name="login-user" id="login-user" required> 
+                    <label for="login-psw"><b>Mật khẩu</b></label>
+                    <input type="password" placeholder="Nhập Mật khẩu" name="login-psw" id="login-psw" required>
+                    <button type="submit">Đăng nhập</button>
+                </form>
+                <div class="switch-form">
+                    Chưa có tài khoản? <a onclick="showForm('register')">Đăng ký ngay!</a>
+                </div>
+            </div>
+
+            <div id="register-form" style="display: none;">
+                <h2>Đăng ký</h2>
+                <form onsubmit="handleRegister(event)">
+                    <label for="reg-username"><b>Tên đăng nhập (BẮT BUỘC)</b></label>
+                    <input type="text" placeholder="Nhập Tên đăng nhập" name="reg-username" id="reg-username" required>
+                    <label for="reg-psw"><b>Mật khẩu</b></label>
+                    <input type="password" placeholder="Nhập Mật khẩu (tối thiểu 6 ký tự)" name="reg-psw" id="reg-psw" minlength="6" required>
+                    <button type="submit">Đăng ký</button>
+                </form>
+                <div class="switch-form">
+                    Đã có tài khoản? <a onclick="showForm('login')">Đăng nhập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div id="custom-alert" class="alert-modal">
         <div class="alert-content">
             <h3 id="alert-title">Thông báo</h3>
@@ -154,7 +467,24 @@
     </div>
 
     <script>
-        // --- DỮ LIỆU CỐ ĐỊNH (THAY THẾ FIREBASE) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
+            authDomain: "anime-b1597.firebaseapp.com",
+            projectId: "anime-b1597",
+            storageBucket: "anime-b1597.firebasestorage.app",
+            messagingSenderId: "553731174420",
+            appId: "1:553731174420:web:6c01c1cf5bfa2d56567701",
+            measurementId: "G-T01RWXGXPZ"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
+        let currentStoryId = null;
+
+        // --- DỮ LIỆU CỐ ĐỊNH (DATA INDEX) ---
         const OPM_DATA = {
             id: 'OPM-1',
             title: 'One Punch Man (Mùa 1)',
@@ -175,10 +505,9 @@
             maxChapters: 0 
         };
 
-        // Mảng chứa tất cả các truyện
         const STORY_INDEX = [OPM_DATA, TBD_DATA]; 
         
-        // DỮ LIỆU CHƯƠNG TRUYỆN (Dùng cho reader.html)
+        // DỮ LIỆU CHƯƠNG TRUYỆN (Sử dụng trong reader.html)
         const CHAPTER_DATA = {
             'OPM-1_1': [
                 'https://i125.truyenvua.com/244/1.0/3.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/4.jpeg?d=dfgd6546', 
@@ -219,11 +548,37 @@
             ]
         };
 
-        // --- GLOBAL VARIABLES & UTILITIES ---
-
-        let currentStoryId = null; 
+        async function fetchUserByUsername(username) {
+            try {
+                const snapshot = await db.collection("users").where("username", "==", username).limit(1).get();
+                if (!snapshot.empty) {
+                    const doc = snapshot.docs[0];
+                    return { uid: doc.id, ...doc.data() };
+                }
+                return null;
+            } catch (error) {
+                console.error("Lỗi truy vấn Firestore:", error);
+                showCustomAlert("Lỗi truy vấn", "Không thể kết nối Firestore để kiểm tra tài khoản. Kiểm tra quy tắc bảo mật.", "Lỗi hệ thống!");
+                return null;
+            }
+        }
         
-        // Hàm hiển thị alert tùy chỉnh
+        async function saveUser(username, password) {
+            try {
+                const docRef = await db.collection("users").add({
+                    username: username,
+                    password: password, 
+                    role: 'reader',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return { uid: docRef.id, username: username, role: 'reader' };
+            } catch (error) {
+                 console.error("Lỗi ghi Firestore:", error);
+                 showCustomAlert("Lỗi ghi dữ liệu", "Không thể tạo hồ sơ người dùng. Kiểm tra quyền GHI trong Firestore Rules.", "Lỗi hệ thống!");
+                 return null;
+            }
+        }
+
         function showCustomAlert(message, title = "Thông báo") {
             document.getElementById('alert-title').innerText = title;
             document.getElementById('alert-message').innerText = message;
@@ -239,13 +594,14 @@
         }
         
         function updateAuthUI(user) {
-            // [LOGIC UI AUTH KHÔNG THAY ĐỔI]
             const authButtons = document.getElementById('auth-buttons');
             const userActions = document.getElementById('user-actions');
 
             if (user) {
                 authButtons.style.display = 'none';
                 userActions.style.display = 'block';
+                document.querySelector('#user-actions button:first-child').style.display = 
+                    (user.role === 'author') ? 'inline-block' : 'none';
             } else {
                 authButtons.style.display = 'block';
                 userActions.style.display = 'none';
@@ -262,15 +618,18 @@
                 document.getElementById('detail-page').style.display = 'block';
                 currentStoryId = storyId || currentStoryId;
                 renderDetailPage(currentStoryId);
+            } else if (pageId === 'upload') {
+                 const user = JSON.parse(localStorage.getItem('currentUserData'));
+                 if (user && user.role === 'author') {
+                     document.getElementById('upload-page').style.display = 'block';
+                 } else {
+                     showCustomAlert("Bạn không có quyền tác giả để truy cập chức năng này.", "Truy cập bị từ chối!");
+                     showPage('list');
+                 }
             }
             window.scrollTo(0, 0);
         }
         
-        function getStoryData(storyId) {
-            // Lấy dữ liệu truyện từ mảng JS cố định
-            return STORY_INDEX.find(s => s.id === storyId);
-        }
-
         async function renderDetailPage(storyId) {
             const story = getStoryData(storyId);
 
@@ -280,22 +639,20 @@
                 return;
             }
             
-            // LOGIC TRUYỆN ĐANG CẬP NHẬT
             if (story.maxChapters === 0) {
                  showCustomAlert("Truyện này đang cập nhật nội dung.", "Thông báo!");
                  showPage('list');
                  return;
             }
-            
+
             document.getElementById('detail-title').innerText = story.title;
-            document.getElementById('detail-thumb-img').src = story.thumb === story.title ? '' : story.thumb;
-            document.getElementById('detail-thumb-img').style.display = story.thumb === story.title ? 'none' : 'block';
+            document.getElementById('detail-thumb-img').src = story.thumb;
+            document.getElementById('detail-thumb-img').style.display = story.thumb.length > 5 ? 'block' : 'none';
+
             document.getElementById('detail-description').innerText = story.description;
             document.getElementById('detail-genres').innerText = story.genres.join(', ');
             document.getElementById('detail-status').innerText = story.status;
 
-
-            // Gán hàm xử lý sự kiện cho nút BẮT ĐẦU ĐỌC
             document.getElementById('startReadingBtn').onclick = () => startReading(1);
 
             const chapterGrid = document.getElementById('chapter-list-grid');
@@ -317,6 +674,81 @@
              const storyId = currentStoryId;
              const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
              window.location.href = newUrl;
+        }
+
+        function openModal(formType) {
+            document.getElementById('auth-modal').style.display = 'flex';
+            showForm(formType);
+        }
+
+        function closeModal() {
+            document.getElementById('auth-modal').style.display = 'none';
+        }
+
+        function showForm(formType) {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'none';
+            if (formType === 'login') {
+                document.getElementById('login-form').style.display = 'block';
+            } else if (formType === 'register') {
+                document.getElementById('register-form').style.display = 'block';
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-psw').value;
+
+            const existingUser = await fetchUserByUsername(username);
+            if (existingUser) {
+                showCustomAlert("Tên đăng nhập này đã được sử dụng.", "Đăng ký thất bại!");
+                return;
+            }
+
+            const newUser = await saveUser(username, password);
+            
+            if (newUser) {
+                showCustomAlert("Đăng ký thành công! Vui lòng đăng nhập.", "Hoàn tất!");
+                document.getElementById('reg-username').value = '';
+                document.getElementById('reg-psw').value = '';
+                showForm('login');
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-user').value;
+            const password = document.getElementById('login-psw').value;
+
+            const user = await fetchUserByUsername(username);
+
+            if (user && user.password === password) {
+                localStorage.setItem('currentUserData', JSON.stringify(user));
+                closeModal();
+                showCustomAlert(`Đăng nhập thành công!`, "Hoàn tất!");
+                checkLoginStatus();
+            } else {
+                showCustomAlert("Sai Tên đăng nhập hoặc Mật khẩu.", "Đăng nhập thất bại!");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUserData');
+            showCustomAlert("Đã đăng xuất thành công.", "Hoàn tất!");
+            checkLoginStatus();
+        }
+
+        async function handleUpload(event) {
+            event.preventDefault();
+            
+            const userData = JSON.parse(localStorage.getItem('currentUserData'));
+            if (!userData || userData.role !== 'author') {
+                showCustomAlert("Lỗi: Bạn không có quyền tác giả để tải truyện.", "Truy cập bị từ chối!");
+                return;
+            }
+            
+            showCustomAlert("Chức năng tải truyện bị vô hiệu hóa vì yêu cầu Firebase Storage.", "Lỗi chức năng!");
         }
         
         async function loadStories() {
@@ -345,7 +777,6 @@
         }
 
         function checkLoginStatus() {
-            // [LOGIC KIỂM TRA LOGIN]
             const userData = localStorage.getItem('currentUserData');
             if (userData) {
                 const user = JSON.parse(userData);
@@ -359,34 +790,6 @@
             checkLoginStatus();
             loadStories(); 
         });
-        
-        // --- CHỨC NĂNG AUTH KHÁC (GIỮ NGUYÊN) ---
-
-        function openModal(formType) {
-            document.getElementById('auth-modal').style.display = 'flex';
-            showForm(formType);
-        }
-
-        function closeModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
-
-        function showForm(formType) {
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('register-form').style.display = 'none';
-            if (formType === 'login') {
-                document.getElementById('login-form').style.display = 'block';
-            } else if (formType === 'register') {
-                document.getElementById('register-form').style.display = 'block';
-            }
-        }
-
-        // [HÀM ĐĂNG KÝ/ĐĂNG NHẬP SỬ DỤNG FIRESTORE] - Đã được gỡ bỏ khỏi phiên bản này vì không còn Auth.
-        // Tuy nhiên, tôi để lại các hàm gọi để tránh lỗi.
-        async function handleRegister(event) { event.preventDefault(); showCustomAlert("Chức năng bị vô hiệu hóa khi không có Firebase Auth.", "Lỗi!"); }
-        async function handleLogin(event) { event.preventDefault(); showCustomAlert("Chức năng bị vô hiệu hóa khi không có Firebase Auth.", "Lỗi!"); }
-        function logout() { localStorage.removeItem('currentUserData'); showCustomAlert("Đã đăng xuất thành công.", "Hoàn tất!"); checkLoginStatus();}
-        async function handleUpload(event) { event.preventDefault(); showCustomAlert("Chức năng tải truyện bị vô hiệu hóa.", "Lỗi chức năng!"); }
     </script>
 </body>
 </html>
