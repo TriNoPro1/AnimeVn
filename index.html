@@ -626,8 +626,7 @@
                     return;
                 }
             } catch (error) {
-                 // Lỗi này xảy ra nếu quy tắc Firestore chặn truy cập hoặc kết nối lỗi
-                 showCustomAlert("Lỗi kiểm tra tên đăng nhập. Vui lòng kiểm tra lại kết nối Firestore và Quy tắc bảo mật (Security Rules).", "Lỗi hệ thống!");
+                 showCustomAlert("Lỗi kiểm tra tên đăng nhập. Vui lòng kiểm tra lại kết nối Firestore và Quy tắc bảo mật.", "Lỗi hệ thống!");
                  console.error("Lỗi Firestore khi kiểm tra tên đăng nhập:", error);
                  return;
             }
