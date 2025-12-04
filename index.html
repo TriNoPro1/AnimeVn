@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truyện Tranh Hub Custom Auth</title>
+    <title>Truyện Tranh Hub Anime B1597</title>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
     <style>
@@ -360,17 +361,125 @@
         .alert-content button:hover {
             background-color: #2980b9;
         }
+        
+        /* LAYOUT TRANG CHI TIẾT */
+        .detail-header {
+            display: flex;
+            gap: 30px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
 
-        @media (max-width: 900px) {
-            .header {
-                padding: 15px 20px;
-            }
-            .main-layout {
+        .detail-thumb {
+            width: 250px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .detail-thumb img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .detail-info h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 2em;
+        }
+
+        .detail-info .tags span {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 0.9em;
+        }
+
+        .chapter-list-container {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .chapter-list-container h3 {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .chapter-grid a {
+            display: block;
+            text-align: center;
+            background-color: #eee;
+            padding: 10px 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .chapter-grid a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* LAYOUT TRANG ĐỌC */
+        .reader-content {
+            text-align: center;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .reader-content img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+            display: block;
+            margin: 10px auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reader-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+        .reader-nav button {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .detail-header {
                 flex-direction: column;
+                align-items: center;
             }
-            .sidebar {
-                width: 100%;
-                margin-bottom: 0;
+            .detail-thumb {
+                width: 70%;
             }
         }
     </style>
@@ -405,6 +514,42 @@
                 <div class="story-grid" id="story-list-grid">
                     <p style="text-align: center;">Đang tải truyện...</p>
                 </div>
+            </div>
+        </div>
+        
+        <div id="detail-page" class="page-view" style="display: none;">
+            <div class="detail-header">
+                <div class="detail-thumb">
+                    <img id="detail-thumb-img" src="" alt="Ảnh bìa">
+                </div>
+                <div class="detail-info">
+                    <h1 id="detail-title"></h1>
+                    <p><strong>Trạng thái:</strong> Đang tiến hành</p>
+                    <p><strong>Thể loại:</strong> <span id="detail-genres"></span></p>
+                    <p id="detail-description">Mô tả tóm tắt...</p>
+                    <button class="modal-content button" style="width: 250px; background-color: var(--secondary-color);" onclick="startReading(1)">
+                        BẮT ĐẦU ĐỌC
+                    </button>
+                </div>
+            </div>
+            <div class="chapter-list-container">
+                <h3>DANH SÁCH CÁC CHƯƠNG</h3>
+                <div class="chapter-grid" id="chapter-list-grid">
+                    </div>
+            </div>
+        </div>
+
+        <div id="reader-page" class="page-view" style="display: none;">
+            <div class="reader-nav">
+                <button onclick="changeChapter(-1)">← Chương Trước</button>
+                <h3 id="reader-current-chapter" style="color: white; margin: 0;"></h3>
+                <button onclick="changeChapter(1)">Chương Sau →</button>
+            </div>
+            <div class="reader-content" id="reader-image-content">
+                </div>
+            <div class="reader-nav" style="margin-bottom: 20px;">
+                <button onclick="showPage('list')">Về Trang Chủ</button>
+                <button onclick="showPage('detail', currentStoryId)">Về Trang Chi Tiết</button>
             </div>
         </div>
 
@@ -487,7 +632,6 @@
     </div>
 
     <script>
-        // Cấu hình dự án của bạn (anime-b1597)
         const firebaseConfig = {
             apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
             authDomain: "anime-b1597.firebaseapp.com",
@@ -503,9 +647,16 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
         
-        // --- CUSTOM AUTH LOGIC (BỎ QUA FIREBASE AUTH) ---
-        
-        // --- HÀM XỬ LÝ DỮ LIỆU FIRESTORE CHO CUSTOM AUTH ---
+        let currentStoryId = null;
+        let currentChapter = 1;
+        const DUMMY_STORY = {
+            id: 'OPM-3',
+            title: 'One Punch Man 3',
+            thumb: 'https://cdn.animevn.net/images/thumbs/one-punch-man-3.jpg',
+            genres: ['Anime', 'Hành Động', 'Hài Hước', 'Siêu Năng lực'],
+            description: 'Xem phim anime One Punch Man 3 Vietsub với chất lượng tốt nhất tại AnimeVN. Mùa 3 của One Punch Man',
+            maxChapters: 8
+        };
 
         async function fetchUserByUsername(username) {
             try {
@@ -524,7 +675,6 @@
         
         async function saveUser(username, password) {
             try {
-                // Tạo ID ngẫu nhiên và lưu username, password, role trực tiếp vào Firestore
                 const docRef = await db.collection("users").add({
                     username: username,
                     password: password, 
@@ -538,8 +688,6 @@
                  return null;
             }
         }
-
-        // --- HÀM UI VÀ HỘP THÔNG BÁO ---
 
         function showCustomAlert(message, title = "Thông báo") {
             document.getElementById('alert-title').innerText = title;
@@ -567,26 +715,97 @@
             } else {
                 authButtons.style.display = 'block';
                 userActions.style.display = 'none';
-                showPage('list');
             }
         }
         
-        function showPage(pageId) {
-            document.getElementById('list-page').style.display = 'none';
-            document.getElementById('upload-page').style.display = 'none';
+        function showPage(pageId, storyId = null, chapterNum = 1) {
+            document.querySelectorAll('.page-view').forEach(page => page.style.display = 'none');
             
             if (pageId === 'list') {
                 document.getElementById('list-page').style.display = 'flex';
+                currentStoryId = null;
+            } else if (pageId === 'detail') {
+                document.getElementById('detail-page').style.display = 'block';
+                currentStoryId = storyId || currentStoryId;
+                renderDetailPage(currentStoryId);
+            } else if (pageId === 'reader') {
+                document.getElementById('reader-page').style.display = 'block';
+                currentStoryId = storyId || currentStoryId;
+                startReading(chapterNum);
             } else if (pageId === 'upload') {
-                const user = JSON.parse(localStorage.getItem('currentUserData'));
-                if (user && user.role === 'author') {
-                    document.getElementById('upload-page').style.display = 'block';
-                } else {
-                    showCustomAlert("Bạn không có quyền tác giả để truy cập chức năng này.", "Truy cập bị từ chối!");
-                    showPage('list');
-                }
+                 const user = JSON.parse(localStorage.getItem('currentUserData'));
+                 if (user && user.role === 'author') {
+                     document.getElementById('upload-page').style.display = 'block';
+                 } else {
+                     showCustomAlert("Bạn không có quyền tác giả để truy cập chức năng này.", "Truy cập bị từ chối!");
+                     showPage('list');
+                 }
             }
             window.scrollTo(0, 0);
+        }
+        
+        function renderDetailPage(storyId) {
+            const story = DUMMY_STORY; 
+
+            document.getElementById('detail-title').innerText = story.title;
+            document.getElementById('detail-thumb-img').src = story.thumb;
+            document.getElementById('detail-description').innerText = story.description;
+            document.getElementById('detail-genres').innerText = story.genres.join(', ');
+
+            const chapterGrid = document.getElementById('chapter-list-grid');
+            chapterGrid.innerHTML = ''; 
+
+            for (let i = story.maxChapters; i >= 1; i--) {
+                const chapterLink = document.createElement('a');
+                chapterLink.href = `#chapter${i}`;
+                chapterLink.innerText = `Chương ${i}`;
+                chapterLink.onclick = (e) => {
+                    e.preventDefault();
+                    startReading(i);
+                };
+                chapterGrid.appendChild(chapterLink);
+            }
+        }
+        
+        function startReading(chapterNum) {
+            const story = DUMMY_STORY;
+            currentChapter = chapterNum;
+            
+            document.getElementById('reader-current-chapter').innerText = `${story.title} - Chương ${currentChapter}`;
+            
+            const contentDiv = document.getElementById('reader-image-content');
+            contentDiv.innerHTML = '';
+            
+            // Mô phỏng tải 4 trang ảnh
+            for (let i = 1; i <= 4; i++) {
+                const img = document.createElement('img');
+                img.src = `https://via.placeholder.com/800x1200?text=${story.title}+Chap+${currentChapter}+Page+${i}`;
+                img.alt = `Trang ${i}`;
+                contentDiv.appendChild(img);
+            }
+            showPage('reader');
+            updateNavButtons();
+        }
+
+        function updateNavButtons() {
+            const story = DUMMY_STORY;
+            document.querySelectorAll('.reader-nav button').forEach(btn => {
+                if (btn.innerText.includes('Chương Trước')) {
+                    btn.disabled = (currentChapter <= 1);
+                } else if (btn.innerText.includes('Chương Sau')) {
+                    btn.disabled = (currentChapter >= story.maxChapters);
+                }
+            });
+        }
+        
+        function changeChapter(direction) {
+            const story = DUMMY_STORY;
+            const newChapter = currentChapter + direction;
+            if (newChapter >= 1 && newChapter <= story.maxChapters) {
+                startReading(newChapter);
+            } else {
+                showCustomAlert(direction > 0 ? "Đây là chương cuối cùng!" : "Đây là chương đầu tiên!", "Thông báo!");
+            }
         }
 
         function openModal(formType) {
@@ -608,8 +827,6 @@
             }
         }
 
-        // --- LOGIC ĐĂNG KÝ (CUSTOM) ---
-
         async function handleRegister(event) {
             event.preventDefault();
             const username = document.getElementById('reg-username').value;
@@ -630,8 +847,6 @@
                 showForm('login');
             }
         }
-
-        // --- LOGIC ĐĂNG NHẬP (CUSTOM) ---
 
         async function handleLogin(event) {
             event.preventDefault();
@@ -656,8 +871,6 @@
             checkLoginStatus();
         }
 
-        // --- LOGIC TẢI TRUYỆN (Sử dụng dữ liệu Local Storage) ---
-
         async function handleUpload(event) {
             event.preventDefault();
             
@@ -672,36 +885,21 @@
         
         function loadStories() {
             const grid = document.getElementById('story-list-grid');
-            grid.innerHTML = '<p style="text-align: center;">Đang tải truyện...</p>';
-
-            db.collection("stories").orderBy("createdAt", "desc").limit(10).onSnapshot((snapshot) => {
-                grid.innerHTML = '';
-                snapshot.forEach((doc) => {
-                    const story = doc.data();
-                    const coverStyle = story.coverUrl ? 
-                        `background-image: url('${story.coverUrl}'); background-size: cover; background-position: center;` : 
-                        `background-color: #3498db;`;
-
-                    const html = `
-                        <div class="story-item" onclick="showCustomAlert('Tính năng xem chi tiết truyện chưa được xây dựng.', 'Thông tin');">
-                            <div class="cover-placeholder" style="${coverStyle} color: white;">
-                                <span style="font-size: 1.1em;">${story.title}</span>
-                            </div>
-                            <div class="story-info">
-                                <h4>${story.title}</h4>
-                                <p>Thể loại: ${story.genre}</p>
-                            </div>
-                        </div>
-                    `;
-                    grid.innerHTML += html;
-                });
-                if (snapshot.empty) {
-                     grid.innerHTML = '<p style="text-align: center;">Chưa có truyện nào được tải lên.</p>';
-                }
-            }, (error) => {
-                console.error("Lỗi tải truyện:", error);
-                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối Firestore. Vui lòng kiểm tra lại cấu hình Firebase và Quy tắc bảo mật.</p>';
-            });
+            grid.innerHTML = '';
+            
+            // MÔ PHỎNG DỮ LIỆU TỪ FIREBASE ĐỂ HIỂN THỊ TRANG LIST
+            const html = `
+                <div class="story-item" onclick="showPage('detail', 'OPM-3')">
+                    <div class="cover-placeholder" style="background-image: url('${DUMMY_STORY.thumb}'); background-size: cover; background-position: center; color: white;">
+                        <span style="font-size: 1.1em;">${DUMMY_STORY.title}</span>
+                    </div>
+                    <div class="story-info">
+                        <h4>${DUMMY_STORY.title}</h4>
+                        <p>Tập mới nhất: ${DUMMY_STORY.maxChapters}</p>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += html;
         }
 
         function checkLoginStatus() {
@@ -714,7 +912,10 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', checkLoginStatus);
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLoginStatus();
+            loadStories(); 
+        });
     </script>
 </body>
 </html>
