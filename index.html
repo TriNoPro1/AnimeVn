@@ -835,7 +835,6 @@
             document.getElementById('detail-description').innerText = story.description;
             document.getElementById('detail-genres').innerText = story.genres.join(', ');
 
-            // SỬA LỖI NÚT: GÁN HÀM startReading(1) trực tiếp
             document.getElementById('startReadingBtn').onclick = () => startReading(1);
 
             const chapterGrid = document.getElementById('chapter-list-grid');
@@ -855,7 +854,6 @@
         
         function startReading(chapterNum) {
              const storyId = currentStoryId;
-             // CHUYỂN HƯỚNG RA TRANG ĐỌC MỚI
              const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
              window.location.href = newUrl;
         }
@@ -996,6 +994,7 @@
                  }, { merge: true });
                  
                  await db.collection("stories").doc(storyId2).set(TBD_DATA, { merge: true });
+
 
                  await db.collection("chapters").doc(`${storyId1}_1`).set({
                      storyId: storyId1, chapter: 1, pageUrls: OPM_CHAPTER_1_PAGES, pageCount: OPM_CHAPTER_1_PAGES.length
