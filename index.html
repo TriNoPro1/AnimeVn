@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Truyện - Tích hợp Firebase Linh hoạt (Username/Email)</title>
+    <title>Web Truyện - Tích hợp Firebase Hoàn chỉnh</title>
     <style>
-        /* --- CSS TỐI ƯU VÀ GIỮ NGUYÊN --- */
+        /* --- CSS TỐI ƯU VÀ CHỦ ĐỀ --- */
         :root {
-            --primary-color: #e74c3c;
-            --secondary-color: #3498db;
+            --primary-color: #e74c3c; /* Đỏ - Màu thương hiệu */
+            --secondary-color: #3498db; /* Xanh dương - Nổi bật */
             --text-color: #2c3e50;
             --bg-color: #ecf0f1;
             --card-bg: #ffffff;
@@ -302,6 +302,71 @@
         .upload-form button:hover {
             background-color: #2980b9;
         }
+        
+        /* --- CSS Cho Custom Alert Modal (Nút hình hộp thông báo) --- */
+        .alert-modal {
+            display: none; 
+            position: fixed;
+            z-index: 2000; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+        
+        .alert-modal.show {
+             opacity: 1;
+        }
+
+        .alert-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-out;
+        }
+
+        .alert-modal.show .alert-content {
+            transform: scale(1);
+        }
+
+        #alert-title {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+
+        #alert-message {
+            color: var(--text-color);
+            margin: 15px 0 25px 0;
+        }
+
+        .alert-content button {
+            background-color: var(--secondary-color); 
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        .alert-content button:hover {
+            background-color: #2980b9;
+        }
+
 
         /* Responsive */
         @media (max-width: 900px) {
@@ -347,7 +412,7 @@
                 <h2>✨ Truyện Mới Cập Nhật</h2>
                 <div class="story-grid" id="story-list-grid">
                     <p style="text-align: center;">Đang tải truyện...</p>
-                    </div>
+                </div>
             </div>
         </div>
 
@@ -423,6 +488,14 @@
 
         </div>
     </div>
+    
+    <div id="custom-alert" class="alert-modal">
+        <div class="alert-content">
+            <h3 id="alert-title">Thông báo</h3>
+            <p id="alert-message">Nội dung thông báo</p>
+            <button onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
@@ -430,9 +503,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
 
     <script>
-        // --- CHÚ Ý QUAN TRỌNG: CẦN THAY THẾ CẤU HÌNH NÀY BẰNG CẤU HÌNH DỰ ÁN THẬT CỦA BẠN ---
+        // --- CHÚ Ý QUAN TRỌNG: BẠN PHẢI THAY THẾ CẤU HÌNH NÀY BẰNG CẤU HÌNH DỰ ÁN THẬT CỦA BẠN ---
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
+            apiKey: "YOUR_API_KEY", // <== ĐÂY LÀ CHỖ CẦN SỬA ĐỂ KHÔNG BỊ LỖI INVALID API KEY
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
             projectId: "YOUR_PROJECT_ID",
             storageBucket: "YOUR_PROJECT_ID.appspot.com",
@@ -450,11 +523,25 @@
 
         // Biến toàn cục
         let currentUserRole = 'reader'; 
-        const DUMMY_DOMAIN = "@truyentranh-hub.com"; // Tên miền giả lập
+        const DUMMY_DOMAIN = "@truyentranh-hub.com"; 
 
+        // --- Hàm Quản lý Custom Alert ---
+        function showCustomAlert(message, title = "Thông báo") {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-message').innerText = message;
+            const modal = document.getElementById('custom-alert');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('show'); }, 10); 
+        }
+
+        function closeCustomAlert() {
+            const modal = document.getElementById('custom-alert');
+            modal.classList.remove('show');
+            setTimeout(() => { modal.style.display = 'none'; }, 300); 
+        }
+        
         // --- Hàm quản lý Page View và UI ---
 
-        // Hàm kiểm tra vai trò người dùng (Đọc từ Firestore)
         async function checkUserRole(uid) {
             try {
                 const doc = await db.collection("users").doc(uid).get();
@@ -478,7 +565,6 @@
                 userActions.style.display = 'block';
 
                 uploadButton.style.display = (currentUserRole === 'author') ? 'inline-block' : 'none';
-                console.log(`Người dùng đã đăng nhập: ${user.email}, Vai trò: ${currentUserRole}`);
             } else {
                 currentUserRole = 'reader';
                 authButtons.style.display = 'block';
@@ -497,7 +583,7 @@
                 if (currentUserRole === 'author') {
                     document.getElementById('upload-page').style.display = 'block';
                 } else {
-                    alert("Bạn không có quyền tác giả để truy cập chức năng tải truyện.");
+                    showCustomAlert("Bạn không có quyền tác giả để truy cập chức năng này.", "Truy cập bị từ chối!");
                     showPage('list');
                 }
             }
@@ -529,37 +615,36 @@
             event.preventDefault();
             const username = document.getElementById('reg-username').value;
             let email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-psw').value;
+            const password = document = document.getElementById('reg-psw').value;
 
-            // Kiểm tra tên đăng nhập đã được sử dụng chưa (cần kiểm tra trong Firestore)
+            // Kiểm tra tên đăng nhập đã được sử dụng chưa
             const existingUser = await db.collection("users").where("username", "==", username).get();
             if (!existingUser.empty) {
-                alert("Lỗi: Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.");
+                showCustomAlert("Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.", "Đăng ký thất bại!");
                 return;
             }
 
             if (!email) {
-                // TẠO EMAIL GIẢ LẬP cho Firebase Auth
+                // TẠO EMAIL GIẢ LẬP
                 email = `${username.toLowerCase()}${DUMMY_DOMAIN}`;
             }
 
             try {
-                // Sử dụng Firebase Auth để tạo tài khoản bằng Email (thật hoặc giả)
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 
                 // Lưu thông tin người dùng vào Firestore
                 await db.collection("users").doc(userCredential.user.uid).set({
-                    username: username, // Lưu Tên đăng nhập thật
-                    email: email,       // Lưu Email (thật hoặc giả)
+                    username: username,
+                    email: email,
                     role: 'reader', 
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                alert("Đăng ký thành công! Vui lòng đăng nhập.");
+                showCustomAlert("Đăng ký thành công! Vui lòng đăng nhập.", "Hoàn tất!");
                 showForm('login');
             } catch (error) {
-                alert("Lỗi đăng ký: " + error.message);
-                console.error(error);
+                showCustomAlert("Lỗi đăng ký: Vui lòng kiểm tra lại thông tin.", "Lỗi!");
+                console.error("Lỗi đăng ký:", error);
             }
         }
 
@@ -573,18 +658,16 @@
 
             // 1. Kiểm tra xem đầu vào là Email hay Tên đăng nhập
             if (!input.includes('@')) {
-                // Nếu không có ký tự '@', đây là Tên đăng nhập. Phải tìm Email thật trong Firestore.
+                // Nếu không phải Email, tìm kiếm Email thật/giả lập từ Firestore
                 try {
-                    // Tìm kiếm Email thật/giả lập từ Firestore
                     const snapshot = await db.collection("users").where("username", "==", input).limit(1).get();
                     if (snapshot.empty) {
-                        alert("Tên đăng nhập hoặc Email không tồn tại.");
+                        showCustomAlert("Tên đăng nhập hoặc Email không tồn tại.", "Đăng nhập thất bại!");
                         return;
                     }
                     loginEmail = snapshot.docs[0].data().email; 
-
                 } catch (error) {
-                    alert("Lỗi tìm kiếm tên đăng nhập: " + error.message);
+                    showCustomAlert("Lỗi tìm kiếm tên đăng nhập.", "Lỗi!");
                     return;
                 }
             }
@@ -593,28 +676,28 @@
             try {
                 await auth.signInWithEmailAndPassword(loginEmail, password);
                 closeModal();
-                alert(`Đăng nhập thành công!`);
+                showCustomAlert(`Đăng nhập thành công!`, "Hoàn tất!");
             } catch (error) {
-                // Lỗi đăng nhập có thể do mật khẩu sai hoặc Firebase không tìm thấy email đó
-                alert("Lỗi đăng nhập: Sai Tên đăng nhập/Email hoặc Mật khẩu.");
+                showCustomAlert("Sai Tên đăng nhập/Email hoặc Mật khẩu.", "Đăng nhập thất bại!");
+                console.error("Lỗi đăng nhập:", error);
             }
         }
 
         async function logout() {
             try {
                 await auth.signOut();
-                alert("Đã đăng xuất.");
+                showCustomAlert("Đã đăng xuất thành công.", "Hoàn tất!");
             } catch (error) {
-                alert("Lỗi đăng xuất: " + error.message);
+                showCustomAlert("Lỗi đăng xuất.", "Lỗi!");
             }
         }
 
-        // --- Logic Đăng tải Truyện Firebase Storage + Firestore (Giữ nguyên) ---
+        // --- Logic Đăng tải Truyện Firebase Storage + Firestore ---
         async function handleUpload(event) {
             event.preventDefault();
             
             if (currentUserRole !== 'author') {
-                alert("Lỗi: Bạn không có quyền tác giả để tải truyện.");
+                showCustomAlert("Lỗi: Bạn không có quyền tác giả để tải truyện.", "Truy cập bị từ chối!");
                 return;
             }
 
@@ -647,13 +730,13 @@
                     await chapterRef.put(file);
                 }
                 
-                alert(`Tải truyện "${title}" thành công! Truyện đã được thêm vào Firestore.`);
+                showCustomAlert(`Tải truyện "${title}" thành công! Truyện đã được thêm vào Firestore.`, "Tải lên thành công!");
                 event.target.reset(); 
                 showPage('list'); 
 
             } catch (error) {
                 console.error("Lỗi tải truyện lên:", error);
-                alert("Lỗi tải truyện lên: " + error.message);
+                showCustomAlert("Lỗi tải truyện lên: Vui lòng kiểm tra console.", "Lỗi!");
             }
         }
         
@@ -666,13 +749,12 @@
                 grid.innerHTML = '';
                 snapshot.forEach((doc) => {
                     const story = doc.data();
-                    // Nếu coverUrl có sẵn, sử dụng nó làm background-image
                     const coverStyle = story.coverUrl ? 
                         `background-image: url('${story.coverUrl}'); background-size: cover; background-position: center;` : 
                         `background-color: #3498db;`;
 
                     const html = `
-                        <div class="story-item" onclick="alert('Xem truyện: ${story.title}')">
+                        <div class="story-item" onclick="showCustomAlert('Tính năng xem chi tiết truyện chưa được xây dựng.', 'Thông tin');">
                             <div class="cover-placeholder" style="${coverStyle} color: white;">
                                 <span style="font-size: 1.1em;">${story.title}</span>
                             </div>
@@ -689,7 +771,7 @@
                 }
             }, (error) => {
                 console.error("Lỗi tải truyện:", error);
-                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối hoặc quyền Firestore. Vui lòng kiểm tra console.</p>';
+                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối Firestore. Vui lòng kiểm tra lại cấu hình Firebase và API Key.</p>';
             });
         }
 
