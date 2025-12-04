@@ -504,8 +504,9 @@
 
     <script>
         // --- CHÚ Ý QUAN TRỌNG: BẠN PHẢI THAY THẾ CẤU HÌNH NÀY BẰNG CẤU HÌNH DỰ ÁN THẬT CỦA BẠN ---
+        // LỖI API KEY INVALID CỦA BẠN NẰM Ở VIỆC THÔNG TIN DƯỚI ĐÂY KHÔNG CHÍNH XÁC.
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY", // <== ĐÂY LÀ CHỖ CẦN SỬA ĐỂ KHÔNG BỊ LỖI INVALID API KEY
+            apiKey: "YOUR_API_KEY", 
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
             projectId: "YOUR_PROJECT_ID",
             storageBucket: "YOUR_PROJECT_ID.appspot.com",
@@ -615,7 +616,7 @@
             event.preventDefault();
             const username = document.getElementById('reg-username').value;
             let email = document.getElementById('reg-email').value;
-            const password = document = document.getElementById('reg-psw').value;
+            const password = document.getElementById('reg-psw').value;
 
             // Kiểm tra tên đăng nhập đã được sử dụng chưa
             const existingUser = await db.collection("users").where("username", "==", username).get();
