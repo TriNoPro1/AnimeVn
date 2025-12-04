@@ -385,12 +385,14 @@
 </head>
 <body>
 
+    <!-- HEADER -->
     <div class="header">
         <h1><a href="#" onclick="showPage('list')">Truyện Tranh Hub 🚀</a></h1>
         <div class="auth-buttons" id="auth-buttons">
             <button onclick="openModal('login')">Đăng nhập</button>
             <button onclick="openModal('register')">Đăng ký</button>
         </div>
+        <!-- Giả lập khi đã đăng nhập -->
         <div class="auth-buttons" id="user-actions" style="display: none;">
             <button onclick="showPage('upload')">Bảng điều khiển ⚙️</button> 
             <button onclick="logout()">Đăng xuất</button>
@@ -398,7 +400,9 @@
     </div>
 
     <div class="container">
+        <!-- Trang Danh sách Truyện (Mặc định) -->
         <div id="list-page" class="page-view main-layout" style="display: flex;">
+            <!-- Sidebar: Danh sách Thể loại -->
             <div class="sidebar">
                 <h3>📚 Thể loại</h3>
                 <ul class="genre-list">
@@ -408,6 +412,7 @@
                 </ul>
             </div>
 
+            <!-- Nội dung chính: Danh sách truyện/anime -->
             <div class="main-content">
                 <h2>✨ Truyện Mới Cập Nhật</h2>
                 <div class="story-grid" id="story-list-grid">
@@ -416,6 +421,7 @@
             </div>
         </div>
 
+        <!-- Trang Tải truyện lên (Chỉ dành cho tài khoản Verified) -->
         <div id="upload-page" class="page-view" style="display: none;">
             <div class="upload-dashboard">
                 <h2>⬆️ Tải Truyện Lên Web</h2>
@@ -447,10 +453,12 @@
     </div>
 
 
+    <!-- MODAL Đăng nhập/Đăng ký -->
     <div id="auth-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             
+            <!-- FORM ĐĂNG NHẬP (Chấp nhận Username HOẶC Email) -->
             <div id="login-form">
                 <h2>Đăng nhập</h2>
                 <form onsubmit="handleLogin(event)">
@@ -467,6 +475,7 @@
                 </div>
             </div>
 
+            <!-- FORM ĐĂNG KÝ (Username BẮT BUỘC, Email TÙY CHỌN) -->
             <div id="register-form" style="display: none;">
                 <h2>Đăng ký</h2>
                 <form onsubmit="handleRegister(event)">
@@ -489,6 +498,7 @@
         </div>
     </div>
     
+    <!-- Custom Alert Modal (Nút hình hộp thông báo) -->
     <div id="custom-alert" class="alert-modal">
         <div class="alert-content">
             <h3 id="alert-title">Thông báo</h3>
@@ -497,20 +507,23 @@
         </div>
     </div>
 
+    <!-- 1. Tải Firebase SDKs (v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
 
+    <!-- 2. Khởi tạo Firebase và Logic Ứng dụng -->
     <script>
-        // --- CHÚ Ý QUAN TRỌNG: LỖI API KEY CỦA BẠN NẰM Ở ĐÂY. BẠN PHẢI THAY THẾ CẤU HÌNH NÀY BẰNG CẤU HÌNH DỰ ÁN THẬT CỦA BẠN ---
+        // --- CẤU HÌNH ĐÃ ĐƯỢC CUNG CẤP VÀ ĐƯA VÀO ---
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY", 
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "SENDER_ID",
-            appId: "APP_ID"
+            apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
+            authDomain: "anime-b1597.firebaseapp.com",
+            projectId: "anime-b1597",
+            storageBucket: "anime-b1597.firebasestorage.app",
+            messagingSenderId: "553731174420",
+            appId: "1:553731174420:web:6c01c1cf5bfa2d56567701",
+            measurementId: "G-T01RWXGXPZ"
         };
 
         // Khởi tạo Firebase
@@ -609,7 +622,7 @@
             }
         }
 
-        // --- Logic Đăng ký Firebase Auth (Linh hoạt và Tối ưu) ---
+        // --- Logic Đăng ký Firebase Auth (Linh hoạt) ---
 
         async function handleRegister(event) {
             event.preventDefault();
