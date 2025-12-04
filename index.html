@@ -119,6 +119,15 @@
             padding: 10px 0;
         }
 
+        .story-item {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
         .story-item:hover {
             transform: translateY(-8px);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
@@ -970,7 +979,7 @@
 
                  console.log("Dữ liệu truyện và chương 1 đã được tạo thành công.");
              } catch (error) {
-                 showCustomAlert("LỖI GHI DỮ LIỆU. Vui lòng kiểm tra lại Quy tắc Bảo mật Firestore (cần 'allow write: if true' TẠM THỜI).", "Lỗi nghiêm trọng!");
+                 showCustomAlert("LỖI GHI DỮ LIỆU. Vui lòng kiểm tra lại Quy tắc Bảo mật Firestore (cần cho phép GHI nếu chưa đăng nhập).", "Lỗi nghiêm trọng!");
                  console.error("Lỗi tạo dữ liệu mẫu:", error);
              }
         }
