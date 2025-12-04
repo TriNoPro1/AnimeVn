@@ -609,7 +609,7 @@
             }
         }
 
-        // --- Logic Đăng ký Firebase Auth (Linh hoạt) ---
+        // --- Logic Đăng ký Firebase Auth (Linh hoạt và Tối ưu) ---
 
         async function handleRegister(event) {
             event.preventDefault();
@@ -617,22 +617,30 @@
             let email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-psw').value;
 
-            // Kiểm tra tên đăng nhập đã được sử dụng chưa
-            const existingUser = await db.collection("users").where("username", "==", username).get();
-            if (!existingUser.empty) {
-                showCustomAlert("Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.", "Đăng ký thất bại!");
-                return;
+            // 1. KIỂM TRA TÊN ĐĂNG NHẬP TRÙNG (TRƯỚC KHI GỌI AUTH)
+            try {
+                const existingUser = await db.collection("users").where("username", "==", username).limit(1).get();
+                if (!existingUser.empty) {
+                    showCustomAlert("Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.", "Đăng ký thất bại!");
+                    return;
+                }
+            } catch (error) {
+                 showCustomAlert("Lỗi kiểm tra tên đăng nhập. Vui lòng kiểm tra lại kết nối Firestore.", "Lỗi hệ thống!");
+                 console.error("Lỗi Firestore khi kiểm tra tên đăng nhập:", error);
+                 return;
             }
 
+
             if (!email) {
-                // TẠO EMAIL GIẢ LẬP
+                // 2. TẠO EMAIL GIẢ LẬP nếu không có Email thật
                 email = `${username.toLowerCase()}${DUMMY_DOMAIN}`;
             }
 
+            // 3. TẠO TÀI KHOẢN TRÊN FIREBASE AUTH
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 
-                // Lưu thông tin người dùng vào Firestore
+                // 4. GHI THÔNG TIN VÀO FIRESTORE SAU KHI AUTH THÀNH CÔNG
                 await db.collection("users").doc(userCredential.user.uid).set({
                     username: username,
                     email: email,
@@ -643,8 +651,9 @@
                 showCustomAlert("Đăng ký thành công! Vui lòng đăng nhập.", "Hoàn tất!");
                 showForm('login');
             } catch (error) {
-                showCustomAlert("Đăng ký không thành công! Vui lòng kiểm tra API Key và đảm bảo Email/Password đã được bật trong Firebase Auth.", "Lỗi!");
-                console.error("Lỗi đăng ký:", error);
+                // Đây là nơi lỗi API Key/Auth sẽ hiển thị
+                showCustomAlert("Đăng ký không thành công! Lỗi: " + error.message, "Lỗi Firebase!");
+                console.error("Lỗi đăng ký Firebase Auth:", error);
             }
         }
 
@@ -771,7 +780,7 @@
                 }
             }, (error) => {
                 console.error("Lỗi tải truyện:", error);
-                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối Firestore. Vui lòng kiểm tra lại cấu hình Firebase và API Key.</p>.</p>';
+                grid.innerHTML = '<p style="text-align: center; color: red;">Lỗi kết nối Firestore. Vui lòng kiểm tra lại cấu hình Firebase và API Key.</p>';
             });
         }
 
