@@ -6,10 +6,10 @@
     <title>Truyện Tranh Thủ Công | KHÔNG FIREBASE</title>
     <style>
         :root {
-            --primary-color: #008080; /* Teal mới */
+            --primary-color: #008080;
             --secondary-color: #2c3e50;
             --text-color: #2c3e50;
-            --bg-color: #f0f8ff; /* Nền xanh nhạt */
+            --bg-color: #f0f8ff;
             --card-bg: #ffffff;
             --border-color: #bdc3c7;
         }
@@ -102,7 +102,7 @@
 
     <div class="header">
         <h1><a href="#" onclick="showPage('list')">Truyện Tranh Thủ Công 🚀</a></h1>
-        </div>
+    </div>
 
     <div class="container">
         <div id="list-page" class="page-view main-layout" style="display: flex;">
@@ -138,24 +138,11 @@
             <div class="chapter-list-container">
                 <h3>DANH SÁCH CÁC CHƯƠNG</h3>
                 <div class="chapter-grid" id="chapter-list-grid">
-                </div>
+                    </div>
             </div>
         </div>
 
-        <div id="reader-page" class="page-view" style="display: none;">
-            <div class="reader-nav">
-                <button onclick="changeChapter(-1)">← Chương Trước</button>
-                <h3 id="reader-current-chapter" style="color: white; margin: 0;"></h3>
-                <button onclick="changeChapter(1)">Chương Sau →</button>
-            </div>
-            <div class="reader-content" id="reader-image-content">
-            </div>
-            <div class="reader-nav" style="margin-bottom: 20px;">
-                <button onclick="showPage('list')">Về Trang Chủ</button>
-                <button onclick="showPage('detail', currentStoryId)">Về Trang Chi Tiết</button>
-            </div>
         </div>
-    </div>
 
 
     <div id="custom-alert" class="alert-modal">
@@ -181,13 +168,17 @@
         const TBD_DATA = {
             id: 'TBD-210',
             title: '210',
-            thumb: '210',
+            thumb: '210', 
             genres: ['Đang Cập Nhật'],
             description: 'Truyện đang trong quá trình cập nhật nội dung.',
             status: 'Đang cập nhật',
             maxChapters: 0 
         };
 
+        // Mảng chứa tất cả các truyện
+        const STORY_INDEX = [OPM_DATA, TBD_DATA]; 
+        
+        // DỮ LIỆU CHƯƠNG TRUYỆN (Dùng cho reader.html)
         const CHAPTER_DATA = {
             'OPM-1_1': [
                 'https://i125.truyenvua.com/244/1.0/3.jpeg?d=dfgd6546', 'https://i125.truyenvua.com/244/1.0/4.jpeg?d=dfgd6546', 
@@ -228,47 +219,11 @@
             ]
         };
 
-        const STORY_INDEX = [OPM_DATA, TBD_DATA]; // Mảng chứa tất cả các truyện
+        // --- GLOBAL VARIABLES & UTILITIES ---
 
-        let currentStoryId = null;
-
-        // --- AUTH VÀ DATA LOGIC (FIRESTORE) ---
-        // (Chỉ giữ lại các hàm cần thiết cho logic, loại bỏ Firebase Auth)
-        const db = firebase.firestore(); 
-
-        async function fetchUserByUsername(username) {
-            try {
-                const snapshot = await db.collection("users").where("username", "==", username).limit(1).get();
-                if (!snapshot.empty) {
-                    const doc = snapshot.docs[0];
-                    return { uid: doc.id, ...doc.data() };
-                }
-                return null;
-            } catch (error) {
-                console.error("Lỗi truy vấn Firestore:", error);
-                showCustomAlert("Lỗi truy vấn", "Không thể kết nối Firestore để kiểm tra tài khoản. (Lỗi 1)", "Lỗi hệ thống!");
-                return null;
-            }
-        }
+        let currentStoryId = null; 
         
-        async function saveUser(username, password) {
-            try {
-                const docRef = await db.collection("users").add({
-                    username: username,
-                    password: password, 
-                    role: 'reader',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                return { uid: docRef.id, username: username, role: 'reader' };
-            } catch (error) {
-                 console.error("Lỗi ghi Firestore:", error);
-                 showCustomAlert("Lỗi ghi dữ liệu", "Không thể tạo hồ sơ người dùng. (Lỗi 2)", "Lỗi hệ thống!");
-                 return null;
-            }
-        }
-
-        // --- UI VÀ CHUYỂN TRANG LOGIC ---
-
+        // Hàm hiển thị alert tùy chỉnh
         function showCustomAlert(message, title = "Thông báo") {
             document.getElementById('alert-title').innerText = title;
             document.getElementById('alert-message').innerText = message;
@@ -284,14 +239,13 @@
         }
         
         function updateAuthUI(user) {
+            // [LOGIC UI AUTH KHÔNG THAY ĐỔI]
             const authButtons = document.getElementById('auth-buttons');
             const userActions = document.getElementById('user-actions');
 
             if (user) {
                 authButtons.style.display = 'none';
                 userActions.style.display = 'block';
-                document.querySelector('#user-actions button:first-child').style.display = 
-                    (user.role === 'author') ? 'inline-block' : 'none';
             } else {
                 authButtons.style.display = 'block';
                 userActions.style.display = 'none';
@@ -313,6 +267,7 @@
         }
         
         function getStoryData(storyId) {
+            // Lấy dữ liệu truyện từ mảng JS cố định
             return STORY_INDEX.find(s => s.id === storyId);
         }
 
@@ -333,12 +288,14 @@
             }
             
             document.getElementById('detail-title').innerText = story.title;
-            document.getElementById('detail-thumb-img').src = story.thumb;
+            document.getElementById('detail-thumb-img').src = story.thumb === story.title ? '' : story.thumb;
+            document.getElementById('detail-thumb-img').style.display = story.thumb === story.title ? 'none' : 'block';
             document.getElementById('detail-description').innerText = story.description;
             document.getElementById('detail-genres').innerText = story.genres.join(', ');
             document.getElementById('detail-status').innerText = story.status;
 
 
+            // Gán hàm xử lý sự kiện cho nút BẮT ĐẦU ĐỌC
             document.getElementById('startReadingBtn').onclick = () => startReading(1);
 
             const chapterGrid = document.getElementById('chapter-list-grid');
@@ -358,7 +315,6 @@
         
         function startReading(chapterNum) {
              const storyId = currentStoryId;
-             // CHUYỂN HƯỚNG RA TRANG ĐỌC MỚI
              const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
              window.location.href = newUrl;
         }
@@ -370,11 +326,13 @@
             STORY_INDEX.forEach(story => {
                 const isTextOnly = story.thumb.length <= 5; 
                 const coverStyle = isTextOnly ? '' : `background-image: url('${story.thumb}');`;
+                const textClass = isTextOnly ? 'text-only' : '';
+                const thumbContent = isTextOnly ? `<span>${story.thumb}</span>` : '';
 
                 const html = `
                     <div class="story-item" onclick="showPage('detail', '${story.id}')">
-                        <div class="cover-placeholder ${isTextOnly ? 'text-only' : ''}" style="${coverStyle}">
-                            <span>${story.thumb}</span>
+                        <div class="cover-placeholder ${textClass}" style="${coverStyle}">
+                            ${thumbContent}
                         </div>
                         <div class="story-info">
                             <h4>${story.title}</h4>
@@ -387,6 +345,7 @@
         }
 
         function checkLoginStatus() {
+            // [LOGIC KIỂM TRA LOGIN]
             const userData = localStorage.getItem('currentUserData');
             if (userData) {
                 const user = JSON.parse(userData);
@@ -401,7 +360,7 @@
             loadStories(); 
         });
         
-        // --- CHỨC NĂNG AUTH KHÁC ---
+        // --- CHỨC NĂNG AUTH KHÁC (GIỮ NGUYÊN) ---
 
         function openModal(formType) {
             document.getElementById('auth-modal').style.display = 'flex';
@@ -422,55 +381,12 @@
             }
         }
 
-        async function handleRegister(event) {
-            event.preventDefault();
-            const username = document.getElementById('reg-username').value;
-            const password = document.getElementById('reg-psw').value;
-
-            const existingUser = await fetchUserByUsername(username);
-            if (existingUser) {
-                showCustomAlert("Tên đăng nhập này đã được sử dụng.", "Đăng ký thất bại!");
-                return;
-            }
-
-            const newUser = await saveUser(username, password);
-            
-            if (newUser) {
-                showCustomAlert("Đăng ký thành công! Vui lòng đăng nhập.", "Hoàn tất!");
-                document.getElementById('reg-username').value = '';
-                document.getElementById('reg-psw').value = '';
-                showForm('login');
-            }
-        }
-
-        async function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('login-user').value;
-            const password = document.getElementById('login-psw').value;
-
-            const user = await fetchUserByUsername(username);
-
-            if (user && user.password === password) {
-                localStorage.setItem('currentUserData', JSON.stringify(user));
-                closeModal();
-                showCustomAlert(`Đăng nhập thành công!`, "Hoàn tất!");
-                checkLoginStatus();
-            } else {
-                showCustomAlert("Sai Tên đăng nhập hoặc Mật khẩu.", "Đăng nhập thất bại!");
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('currentUserData');
-            showCustomAlert("Đã đăng xuất thành công.", "Hoàn tất!");
-            checkLoginStatus();
-        }
-
-        async function handleUpload(event) {
-            event.preventDefault();
-            showCustomAlert("Chức năng tải truyện bị vô hiệu hóa.", "Lỗi chức năng!");
-        }
-
+        // [HÀM ĐĂNG KÝ/ĐĂNG NHẬP SỬ DỤNG FIRESTORE] - Đã được gỡ bỏ khỏi phiên bản này vì không còn Auth.
+        // Tuy nhiên, tôi để lại các hàm gọi để tránh lỗi.
+        async function handleRegister(event) { event.preventDefault(); showCustomAlert("Chức năng bị vô hiệu hóa khi không có Firebase Auth.", "Lỗi!"); }
+        async function handleLogin(event) { event.preventDefault(); showCustomAlert("Chức năng bị vô hiệu hóa khi không có Firebase Auth.", "Lỗi!"); }
+        function logout() { localStorage.removeItem('currentUserData'); showCustomAlert("Đã đăng xuất thành công.", "Hoàn tất!"); checkLoginStatus();}
+        async function handleUpload(event) { event.preventDefault(); showCustomAlert("Chức năng tải truyện bị vô hiệu hóa.", "Lỗi chức năng!"); }
     </script>
 </body>
 </html>
