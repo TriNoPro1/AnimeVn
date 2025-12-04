@@ -3,51 +3,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truyện Tranh Hub | Trang Chính</title>
+    <title>Truyện Tranh Hub Anime B1597</title>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
     <style>
-        /* [CSS TỪ CODE TRƯỚC ĐÃ ĐƯỢC GIỮ LẠI] */
-        :root {--primary-color: #e74c3c;--secondary-color: #3498db;--text-color: #2c3e50;--bg-color: #ecf0f1;--card-bg: #ffffff;--border-color: #bdc3c7;}
-        body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;margin: 0;padding: 0;background-color: var(--bg-color);color: var(--text-color);line-height: 1.6;}
-        a {text-decoration: none;color: inherit;}
-        button {cursor: pointer;}
-        .header {background-color: var(--primary-color);color: white;padding: 15px 40px;display: flex;justify-content: space-between;align-items: center;box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);}
-        .header h1 a {color: white;font-size: 1.8em;}
-        .auth-buttons button {background: none;border: 1px solid white;color: white;padding: 8px 15px;border-radius: 5px;margin-left: 10px;transition: background-color 0.2s;}
-        .auth-buttons button:hover {background-color: white;color: var(--primary-color);}
-        .container {width: 95%;max-width: 1300px;margin: 20px auto;}
-        .main-layout {display: flex;gap: 30px;padding: 20px 0;}
-        .sidebar {width: 250px;background-color: var(--card-bg);padding: 20px;border-radius: 10px;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);height: fit-content;}
-        .main-content {flex: 1;}
-        .genre-list {list-style: none;padding: 0;margin-top: 15px;}
-        .genre-list li a {display: block;padding: 10px 0;color: var(--text-color);border-bottom: 1px solid var(--border-color);font-weight: 500;}
-        .story-grid {display: grid;grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));gap: 25px;padding: 10px 0;}
-        .story-item {background-color: var(--card-bg);border-radius: 10px;overflow: hidden;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);transition: transform 0.3s, box-shadow 0.3s;cursor: pointer;}
-        .story-item:hover {transform: translateY(-8px);box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);}
-        .cover-placeholder {width: 100%;height: 280px;background-color: #cccccc;display: flex;justify-content: center;align-items: center;color: white;font-weight: bold;font-size: 0.9em;text-align: center;border-bottom: 1px solid var(--border-color);background-size: cover;background-position: center;}
-        .story-info {padding: 15px;}
-        .story-info h4 {margin: 0 0 5px 0;font-size: 1.1em;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;color: var(--text-color);}
-        .story-info p {margin: 0;color: #7f8c8d;font-size: 0.9em;}
-        .modal {display: none;position: fixed;z-index: 1000;left: 0;top: 0;width: 100%;height: 100%;overflow: auto;background-color: rgba(0, 0, 0, 0.6);justify-content: center;align-items: center;}
-        .modal-content {background-color: var(--card-bg);margin: auto;padding: 30px;border-radius: 10px;width: 90%;max-width: 400px;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);position: relative;}
-        .close-btn {color: var(--border-color);float: right;font-size: 28px;font-weight: bold;}
-        .modal-content h2 {text-align: center;color: var(--primary-color);margin-bottom: 25px;}
-        .modal-content input[type="text"],.modal-content input[type="password"] {width: 100%;padding: 12px;margin: 8px 0 15px 0;display: inline-block;border: 1px solid var(--border-color);border-radius: 5px;box-sizing: border-box;}
-        .modal-content button {background-color: var(--primary-color);color: white;padding: 14px 20px;margin: 8px 0;border: none;width: 100%;border-radius: 5px;transition: background-color 0.2s;}
-        .upload-dashboard {background-color: var(--card-bg);padding: 25px;border-radius: 10px;box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);margin-top: 20px;}
-        .detail-header {display: flex;gap: 30px;background-color: var(--card-bg);padding: 20px;border-radius: 10px;box-shadow: 0 4px 8px rgba(0,0,0,0.1);margin-bottom: 20px;}
-        .detail-thumb {width: 250px;flex-shrink: 0;box-shadow: 0 4px 8px rgba(0,0,0,0.2);border-radius: 8px;overflow: hidden;}
-        .detail-thumb img {width: 100%;height: auto;display: block;}
-        .detail-info h1 {color: var(--primary-color);margin-top: 0;font-size: 2em;}
-        .detail-info .tags span {display: inline-block;background-color: var(--secondary-color);color: white;padding: 4px 10px;border-radius: 4px;margin-right: 8px;font-size: 0.9em;}
-        .chapter-list-container {background-color: var(--card-bg);padding: 20px;border-radius: 10px;box-shadow: 0 4px 8px rgba(0,0,0,0.1);}
-        .chapter-list-container h3 {border-bottom: 2px solid var(--primary-color);padding-bottom: 10px;margin-top: 0;}
-        .chapter-grid {display: grid;grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));gap: 10px;margin-top: 15px;}
-        .chapter-grid a {display: block;text-align: center;background-color: #eee;padding: 10px 5px;border-radius: 5px;font-weight: bold;border: 1px solid #ddd;transition: background-color 0.2s, color 0.2s;}
-        .chapter-grid a:hover {background-color: var(--primary-color);color: white;}
+        :root {
+            --primary-color: #e74c3c;
+            --secondary-color: #3498db;
+            --text-color: #2c3e50;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --border-color: #bdc3c7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 a {
+            color: white;
+            font-size: 1.8em;
+        }
+
+        .auth-buttons button {
+            background: none;
+            border: 1px solid white;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-left: 10px;
+            transition: background-color 0.2s;
+        }
+        .auth-buttons button:hover {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1300px;
+            margin: 20px auto;
+        }
+        
+        .main-layout {
+            display: flex;
+            gap: 30px;
+            padding: 20px 0;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .genre-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .genre-list li a {
+            display: block;
+            padding: 10px 0;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        .genre-list li:last-child a {
+            border-bottom: none;
+        }
+
+        .genre-list li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            padding: 10px 0;
+        }
+
+        .story-item {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .story-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cover-placeholder {
+            width: 100%;
+            height: 280px;
+            background-color: #cccccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .cover-placeholder.text-only {
+            background-color: #333; /* Màu nền tối cho chữ */
+            font-size: 3em; /* Chữ to hơn */
+        }
+
+        .story-info {
+            padding: 15px;
+        }
+
+        .story-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-color);
+        }
+
+        .story-info p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            color: var(--border-color);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+        }
+
+        .modal-content input[type="text"],
+        .modal-content input[type="email"],
+        .modal-content input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 15px 0;
+            display: inline-block;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .modal-content button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.2s;
+        }
+
+        .modal-content button:hover {
+            background-color: #c0392b;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .switch-form a {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .upload-dashboard {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+        }
+
+        .upload-dashboard h2 {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .upload-form label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .upload-form input[type="text"],
+        .upload-form textarea,
+        .upload-form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        .upload-form input[type="file"] {
+             margin-top: 10px;
+        }
+
+        .upload-form button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+
+        .upload-form button:hover {
+            background-color: #2980b9;
+        }
+        
+        .alert-modal {
+            display: none; 
+            position: fixed;
+            z-index: 2000; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+        
+        .alert-modal.show {
+             opacity: 1;
+        }
+
+        .alert-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-out;
+        }
+
+        .alert-modal.show .alert-content {
+            transform: scale(1);
+        }
+
+        #alert-title {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+
+        #alert-message {
+            color: var(--text-color);
+            margin: 15px 0 25px 0;
+        }
+
+        .alert-content button {
+            background-color: var(--secondary-color); 
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        .alert-content button:hover {
+            background-color: #2980b9;
+        }
+
+        @media (max-width: 900px) {
+            .header {
+                padding: 15px 20px;
+            }
+            .main-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                margin-bottom: 0;
+            }
+        }
+        
+        .detail-header {
+            display: flex;
+            gap: 30px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .detail-thumb {
+            width: 250px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .detail-thumb img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .detail-info h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 2em;
+        }
+
+        .detail-info .tags span {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 0.9em;
+        }
+
+        .chapter-list-container {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .chapter-list-container h3 {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .chapter-grid a {
+            display: block;
+            text-align: center;
+            background-color: #eee;
+            padding: 10px 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .chapter-grid a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .reader-content {
+            text-align: center;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .reader-content img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+            display: block;
+            margin: 10px auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reader-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+        .reader-nav button {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .detail-header {
+                flex-direction: column;
+                align-items: center;
+            }
+            .detail-thumb {
+                width: 70%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -74,6 +525,7 @@
                     <li><a href="#">Lãng Mạn</a></li>
                 </ul>
             </div>
+
             <div class="main-content">
                 <h2>✨ Truyện Mới Cập Nhật</h2>
                 <div class="story-grid" id="story-list-grid">
@@ -81,7 +533,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div id="detail-page" class="page-view" style="display: none;">
             <div class="detail-header">
                 <div class="detail-thumb">
@@ -104,6 +556,20 @@
             </div>
         </div>
 
+        <div id="reader-page" class="page-view" style="display: none;">
+            <div class="reader-nav">
+                <button onclick="changeChapter(-1)">← Chương Trước</button>
+                <h3 id="reader-current-chapter" style="color: white; margin: 0;"></h3>
+                <button onclick="changeChapter(1)">Chương Sau →</button>
+            </div>
+            <div class="reader-content" id="reader-image-content">
+            </div>
+            <div class="reader-nav" style="margin-bottom: 20px;">
+                <button onclick="showPage('list')">Về Trang Chủ</button>
+                <button onclick="showPage('detail', currentStoryId)">Về Trang Chi Tiết</button>
+            </div>
+        </div>
+
         <div id="upload-page" class="page-view" style="display: none;">
             <div class="upload-dashboard">
                 <h2>⬆️ Tải Truyện Lên Web</h2>
@@ -112,17 +578,22 @@
                 <form onsubmit="handleUpload(event)">
                     <label for="title">Tên Truyện:</label>
                     <input type="text" id="title" name="title" required placeholder="Ví dụ: Tên Truyện Mới">
+
                     <label for="genre">Thể loại:</label>
                     <select id="genre" name="genre">
                         <option value="Action">Hành Động</option>
                         <option value="Comedy">Hài Hước</option>
                     </select>
+
                     <label for="description">Mô tả tóm tắt:</label>
                     <textarea id="description" name="description" rows="4" placeholder="Nhập mô tả về nội dung truyện..."></textarea>
+
                     <label for="cover-image">Ảnh Bìa (Cover Image):</label>
                     <input type="file" id="cover-image" name="cover-image" accept="image/*" required>
+                    
                     <label for="chapter-files">Các Tập Truyện (Files/Images):</label>
                     <input type="file" id="chapter-files" name="chapter-files" accept="image/*,.zip" multiple required>
+
                     <button type="submit">Đăng Tải Truyện Mới</button>
                 </form>
             </div>
@@ -139,8 +610,10 @@
                 <form onsubmit="handleLogin(event)">
                     <label for="login-user"><b>Tên đăng nhập</b></label>
                     <input type="text" placeholder="Nhập Tên đăng nhập" name="login-user" id="login-user" required> 
+
                     <label for="login-psw"><b>Mật khẩu</b></label>
                     <input type="password" placeholder="Nhập Mật khẩu" name="login-psw" id="login-psw" required>
+
                     <button type="submit">Đăng nhập</button>
                 </form>
                 <div class="switch-form">
@@ -153,14 +626,17 @@
                 <form onsubmit="handleRegister(event)">
                     <label for="reg-username"><b>Tên đăng nhập (BẮT BUỘC)</b></label>
                     <input type="text" placeholder="Nhập Tên đăng nhập" name="reg-username" id="reg-username" required>
+
                     <label for="reg-psw"><b>Mật khẩu</b></label>
                     <input type="password" placeholder="Nhập Mật khẩu (tối thiểu 6 ký tự)" name="reg-psw" id="reg-psw" minlength="6" required>
+
                     <button type="submit">Đăng ký</button>
                 </form>
                 <div class="switch-form">
                     Đã có tài khoản? <a onclick="showForm('login')">Đăng nhập</a>
                 </div>
             </div>
+
         </div>
     </div>
     
@@ -173,7 +649,6 @@
     </div>
 
     <script>
-        // Cấu hình Firebase (Tích hợp cấu hình anime-b1597 của bạn)
         const firebaseConfig = {
             apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
             authDomain: "anime-b1597.firebaseapp.com",
@@ -190,17 +665,27 @@
         const storage = firebase.storage();
         
         let currentStoryId = null;
-        
-        // Dữ liệu mẫu OPM (Hardcoded, chỉ sử dụng trong file này)
+        let currentChapter = 1;
+
         const OPM_DATA = {
             id: 'OPM-1',
             title: 'One Punch Man (Mùa 1)',
             thumb: 'https://cdn.animevn.net/images/thumbs/one-punch-man-3.jpg',
             genres: ['Hành Động', 'Hài Hước', 'Siêu Năng lực'],
-            description: 'Manga kể về Saitama, một siêu anh hùng trở nên quá mạnh mẽ đến nỗi có thể đánh bại bất kỳ đối thủ nào chỉ bằng một cú đấm duy nhất.',
+            description: 'Manga kể về Saitama, một siêu anh hùng trở nên quá mạnh mẽ đến nỗi có thể đánh bại bất kỳ đối thủ nào chỉ bằng một cú đấm duy nhất. Vì vậy, anh phải đối mặt với một cuộc khủng hoảng: không có đối thủ xứng tầm, anh không còn cảm thấy sự hồi hộp khi chiến đấu.',
             maxChapters: 1
         };
         
+        // Dữ liệu truyện 210
+        const TBD_DATA = {
+            id: 'TBD-210',
+            title: '210',
+            thumb: 'CHỮ 210',
+            genres: ['Đang Cập Nhật'],
+            description: 'Truyện đang trong quá trình cập nhật nội dung.',
+            maxChapters: 0 
+        };
+
         const OPM_CHAPTER_1_PAGES = [
             'https://i125.truyenvua.com/244/1.0/3.jpeg?d=dfgd6546',
             'https://i125.truyenvua.com/244/1.0/4.jpeg?d=dfgd6546',
@@ -222,7 +707,6 @@
             'https://i125.truyenvua.com/244/1.0/20.jpeg?d=dfgd6546'
         ];
 
-        // --- CUSTOM AUTH VÀ FIRESTORE LOGIC ---
         async function fetchUserByUsername(username) {
             try {
                 const snapshot = await db.collection("users").where("username", "==", username).limit(1).get();
@@ -233,7 +717,7 @@
                 return null;
             } catch (error) {
                 console.error("Lỗi truy vấn Firestore:", error);
-                showCustomAlert("Lỗi truy vấn", "Không thể kết nối Firestore để kiểm tra tài khoản.", "Lỗi hệ thống!");
+                showCustomAlert("Lỗi truy vấn", "Không thể kết nối Firestore để kiểm tra tài khoản. Kiểm tra quy tắc bảo mật.", "Lỗi hệ thống!");
                 return null;
             }
         }
@@ -305,15 +789,13 @@
             window.scrollTo(0, 0);
         }
         
-        // --- CHUYỂN HƯỚNG RA TRANG ĐỌC MỚI (READER.HTML) ---
-        function startReading(chapterNum) {
-             const storyId = OPM_DATA.id;
-             const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
-             window.location.href = newUrl;
-        }
-        // ----------------------------------------------------
-
         async function renderDetailPage(storyId) {
+            if (storyId === TBD_DATA.id) {
+                showCustomAlert("Truyện này đang cập nhật.", "Thông báo!");
+                showPage('list');
+                return;
+            }
+
             const storyDoc = await db.collection("stories").doc(storyId).get();
             if (!storyDoc.exists) {
                 showCustomAlert("Truyện này không tồn tại.", "Lỗi 404!");
@@ -327,7 +809,6 @@
             document.getElementById('detail-description').innerText = story.description;
             document.getElementById('detail-genres').innerText = story.genres.join(', ');
 
-            // GÁN SỰ KIỆN CHO NÚT BẮT ĐẦU ĐỌC
             document.getElementById('startReadingBtn').onclick = () => startReading(1);
 
             const chapterGrid = document.getElementById('chapter-list-grid');
@@ -339,12 +820,37 @@
                 chapterLink.innerText = `Chương ${i}`;
                 chapterLink.onclick = (e) => {
                     e.preventDefault();
-                    startReading(i); // Chuyển hướng ra ngoài
+                    startReading(i);
                 };
                 chapterGrid.appendChild(chapterLink);
             }
         }
         
+        function startReading(chapterNum) {
+             const storyId = currentStoryId;
+             const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
+             window.location.href = newUrl;
+        }
+
+        function openModal(formType) {
+            document.getElementById('auth-modal').style.display = 'flex';
+            showForm(formType);
+        }
+
+        function closeModal() {
+            document.getElementById('auth-modal').style.display = 'none';
+        }
+
+        function showForm(formType) {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'none';
+            if (formType === 'login') {
+                document.getElementById('login-form').style.display = 'block';
+            } else if (formType === 'register') {
+                document.getElementById('register-form').style.display = 'block';
+            }
+        }
+
         async function handleRegister(event) {
             event.preventDefault();
             const username = document.getElementById('reg-username').value;
@@ -405,27 +911,46 @@
             const grid = document.getElementById('story-list-grid');
             grid.innerHTML = '';
             
-            const storyDoc = await db.collection("stories").doc(OPM_DATA.id).get();
+            // Lệnh chỉ tải OPM-1
+            const opmDoc = await db.collection("stories").doc(OPM_DATA.id).get();
             
-            if (storyDoc.exists) {
-                 const story = storyDoc.data();
-                 const html = `
-                     <div class="story-item" onclick="showPage('detail', '${story.id}')">
-                         <div class="cover-placeholder" style="background-image: url('${story.thumb}'); color: white;">
-                             <span style="font-size: 1.1em;">${story.title}</span>
-                         </div>
-                         <div class="story-info">
-                             <h4>${story.title}</h4>
-                             <p>Tập mới nhất: ${story.maxChapters}</p>
-                         </div>
-                     </div>
-                 `;
-                 grid.innerHTML += html;
-             } else {
+            // Khởi tạo dữ liệu mẫu nếu chưa có
+            if (!opmDoc.exists) {
                  grid.innerHTML = '<p style="text-align: center;">Đang tự động khởi tạo dữ liệu mẫu...</p>';
                  await createOPMChapter1Data();
-                 loadStories(); 
-             }
+                 loadStories();
+                 return;
+            }
+            
+            const storyOpm = opmDoc.data();
+            
+            // HIỂN THỊ OPM
+            const opmHtml = `
+                <div class="story-item" onclick="showPage('detail', '${storyOpm.id}')">
+                    <div class="cover-placeholder" style="background-image: url('${storyOpm.thumb}'); color: white;">
+                        <span style="font-size: 1.1em;">${storyOpm.title}</span>
+                    </div>
+                    <div class="story-info">
+                        <h4>${storyOpm.title}</h4>
+                        <p>Tập mới nhất: ${storyOpm.maxChapters}</p>
+                    </div>
+                </div>
+            `;
+            
+            // HIỂN THỊ TBD-210
+            const tbdHtml = `
+                <div class="story-item" onclick="showPage('detail', '${TBD_DATA.id}')">
+                    <div class="cover-placeholder text-only" style="background-image: none;">
+                        <span>210</span>
+                    </div>
+                    <div class="story-info">
+                        <h4>${TBD_DATA.title}</h4>
+                        <p>Trạng thái: Đang cập nhật</p>
+                    </div>
+                </div>
+            `;
+            
+            grid.innerHTML = opmHtml + tbdHtml;
         }
 
         async function createOPMChapter1Data() {
