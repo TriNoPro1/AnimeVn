@@ -150,8 +150,8 @@
         }
 
         .cover-placeholder.text-only {
-            background-color: #333; /* Màu nền tối cho chữ */
-            font-size: 3em; /* Chữ to hơn */
+            background-color: #333;
+            font-size: 3em;
         }
 
         .story-info {
@@ -256,131 +256,12 @@
             font-weight: bold;
         }
 
-        .upload-dashboard {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            margin-top: 20px;
-        }
-
         .upload-dashboard h2 {
             border-bottom: 2px solid var(--primary-color);
             padding-bottom: 10px;
             color: var(--text-color);
         }
 
-        .upload-form label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        .upload-form input[type="text"],
-        .upload-form textarea,
-        .upload-form select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            box-sizing: border-box;
-            resize: vertical;
-        }
-
-        .upload-form input[type="file"] {
-             margin-top: 10px;
-        }
-
-        .upload-form button {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            margin-top: 20px;
-            font-size: 1em;
-            transition: background-color 0.2s;
-        }
-
-        .upload-form button:hover {
-            background-color: #2980b9;
-        }
-        
-        .alert-modal {
-            display: none; 
-            position: fixed;
-            z-index: 2000; 
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease-out;
-        }
-        
-        .alert-modal.show {
-             opacity: 1;
-        }
-
-        .alert-content {
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 350px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            transform: scale(0.95);
-            transition: transform 0.3s ease-out;
-        }
-
-        .alert-modal.show .alert-content {
-            transform: scale(1);
-        }
-
-        #alert-title {
-            color: var(--primary-color);
-            margin-top: 0;
-            font-size: 1.5em;
-        }
-
-        #alert-message {
-            color: var(--text-color);
-            margin: 15px 0 25px 0;
-        }
-
-        .alert-content button {
-            background-color: var(--secondary-color); 
-            color: white;
-            padding: 10px 30px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1em;
-            width: 100%;
-            transition: background-color 0.2s;
-        }
-
-        .alert-content button:hover {
-            background-color: #2980b9;
-        }
-
-        @media (max-width: 900px) {
-            .header {
-                padding: 15px 20px;
-            }
-            .main-layout {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                margin-bottom: 0;
-            }
-        }
-        
         .detail-header {
             display: flex;
             gap: 30px;
@@ -456,49 +337,6 @@
             background-color: var(--primary-color);
             color: white;
         }
-        
-        .reader-content {
-            text-align: center;
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .reader-content img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 10px;
-            display: block;
-            margin: 10px auto;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .reader-nav {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #333;
-            border-radius: 5px;
-        }
-        .reader-nav button {
-            padding: 10px 20px;
-            background-color: var(--secondary-color);
-            color: white;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .detail-header {
-                flex-direction: column;
-                align-items: center;
-            }
-            .detail-thumb {
-                width: 70%;
-            }
-        }
     </style>
 </head>
 <body>
@@ -556,20 +394,6 @@
             </div>
         </div>
 
-        <div id="reader-page" class="page-view" style="display: none;">
-            <div class="reader-nav">
-                <button onclick="changeChapter(-1)">← Chương Trước</button>
-                <h3 id="reader-current-chapter" style="color: white; margin: 0;"></h3>
-                <button onclick="changeChapter(1)">Chương Sau →</button>
-            </div>
-            <div class="reader-content" id="reader-image-content">
-            </div>
-            <div class="reader-nav" style="margin-bottom: 20px;">
-                <button onclick="showPage('list')">Về Trang Chủ</button>
-                <button onclick="showPage('detail', currentStoryId)">Về Trang Chi Tiết</button>
-            </div>
-        </div>
-
         <div id="upload-page" class="page-view" style="display: none;">
             <div class="upload-dashboard">
                 <h2>⬆️ Tải Truyện Lên Web</h2>
@@ -578,22 +402,17 @@
                 <form onsubmit="handleUpload(event)">
                     <label for="title">Tên Truyện:</label>
                     <input type="text" id="title" name="title" required placeholder="Ví dụ: Tên Truyện Mới">
-
                     <label for="genre">Thể loại:</label>
                     <select id="genre" name="genre">
                         <option value="Action">Hành Động</option>
                         <option value="Comedy">Hài Hước</option>
                     </select>
-
                     <label for="description">Mô tả tóm tắt:</label>
                     <textarea id="description" name="description" rows="4" placeholder="Nhập mô tả về nội dung truyện..."></textarea>
-
                     <label for="cover-image">Ảnh Bìa (Cover Image):</label>
                     <input type="file" id="cover-image" name="cover-image" accept="image/*" required>
-                    
                     <label for="chapter-files">Các Tập Truyện (Files/Images):</label>
                     <input type="file" id="chapter-files" name="chapter-files" accept="image/*,.zip" multiple required>
-
                     <button type="submit">Đăng Tải Truyện Mới</button>
                 </form>
             </div>
@@ -673,10 +492,9 @@
             thumb: 'https://cdn.animevn.net/images/thumbs/one-punch-man-3.jpg',
             genres: ['Hành Động', 'Hài Hước', 'Siêu Năng lực'],
             description: 'Manga kể về Saitama, một siêu anh hùng trở nên quá mạnh mẽ đến nỗi có thể đánh bại bất kỳ đối thủ nào chỉ bằng một cú đấm duy nhất. Vì vậy, anh phải đối mặt với một cuộc khủng hoảng: không có đối thủ xứng tầm, anh không còn cảm thấy sự hồi hộp khi chiến đấu.',
-            maxChapters: 1
+            maxChapters: 2 // Đã sửa thành 2 chương
         };
         
-        // Dữ liệu truyện 210
         const TBD_DATA = {
             id: 'TBD-210',
             title: '210',
@@ -685,7 +503,7 @@
             description: 'Truyện đang trong quá trình cập nhật nội dung.',
             maxChapters: 0 
         };
-
+        
         const OPM_CHAPTER_1_PAGES = [
             'https://i125.truyenvua.com/244/1.0/3.jpeg?d=dfgd6546',
             'https://i125.truyenvua.com/244/1.0/4.jpeg?d=dfgd6546',
@@ -705,6 +523,33 @@
             'https://i125.truyenvua.com/244/1.0/18.jpeg?d=dfgd6546',
             'https://i125.truyenvua.com/244/1.0/19.jpeg?d=dfgd6546',
             'https://i125.truyenvua.com/244/1.0/20.jpeg?d=dfgd6546'
+        ];
+        
+        const OPM_CHAPTER_2_PAGES = [
+            'https://k00.mbwnp.org/media/7001/5f0be15958fe5316c1c971df/1117361_384341_1066_1600.jpeg',
+            'https://k07.mbzcp.org/media/7001/5f0be15958fe5316c1c971df/1117360_261235_1066_1600.jpeg',
+            'https://n00.mbwnp.org/media/7001/5f0be15958fe5316c1c971df/1117359_240270_1066_1600.jpeg',
+            'https://n14.mbtba.org/media/7001/5f0be15958fe5316c1c971df/1117363_244659_1066_1600.jpeg',
+            'https://n22.mbeaj.org/media/7001/5f0be15958fe5316c1c971df/1117362_277361_1066_1600.jpeg',
+            'https://n15.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117365_314386_1066_1600.jpeg',
+            'https://n26.mbrtz.org/media/7001/5f0be15958fe5316c1c971df/1117364_270357_1066_1600.jpeg',
+            'https://n05.mbeaj.org/media/7001/5f0be15958fe5316c1c971df/1117366_242987_1066_1600.jpeg',
+            'https://k03.mbhiz.org/media/7001/5f0be15958fe5316c1c971df/1117368_460522_1066_1600.jpeg',
+            'https://n03.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117367_327814_1066_1600.jpeg',
+            'https://n30.mbtmv.org/media/7001/5f0be15958fe5316c1c971df/1117369_362462_1066_1600.jpeg',
+            'https://n08.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117370_215985_1066_1600.jpeg',
+            'https://n22.mbdny.org/media/7001/5f0be15958fe5316c1c971df/1117371_374165_1066_1600.jpeg',
+            'https://k08.mbhiz.org/media/7001/5f0be15958fe5316c1c971df/1117372_370895_1066_1600.jpeg',
+            'https://k03.mbmyj.org/media/7001/5f0be15958fe5316c1c971df/1117373_374299_1066_1600.jpeg',
+            'https://n15.mbimg.org/media/7001/5f0be15958fe5316c1c971df/1117374_352546_1066_1600.jpeg',
+            'https://n26.mbeaj.org/media/amav/af3/5f6e4c6ea09f89b6d8aef3fa.jpg',
+            'https://n09.mbopg.org/media/mbav/dde/dde20dc126d15d55f0b765f3542a76d1f992135d_300_300_146282.png',
+            'https://k05.mbznp.org/media/amav/58d/650305ec1d3ba8cea9dd2d85.jpg',
+            'https://n10.mbwww.org/media/mbav/415/415a70d11ba0f8b8b95266e49116808e5884a479_224_224_23285.jpeg',
+            'https://n16.mbfpu.org/media/mbav/336/336209797267442e543bb6120912216bb8247706_300_300_174765.png',
+            'https://n11.mbzcp.org/media/amav/c23/60e7e4446613c7988ba8b32c.jpg',
+            'https://k08.mbqgu.org/media/mbav/6c2/6c2da8ee767fa7823172052f533e2436b4f44efb_300_300_170270.png',
+            'https://n12.mbxma.org/media/amav/c01/602be9b553da1a14de8bc10c.jpg'
         ];
 
         async function fetchUserByUsername(username) {
@@ -795,7 +640,7 @@
                 showPage('list');
                 return;
             }
-
+            
             const storyDoc = await db.collection("stories").doc(storyId).get();
             if (!storyDoc.exists) {
                 showCustomAlert("Truyện này không tồn tại.", "Lỗi 404!");
@@ -911,18 +756,18 @@
             const grid = document.getElementById('story-list-grid');
             grid.innerHTML = '';
             
-            // Lệnh chỉ tải OPM-1
             const opmDoc = await db.collection("stories").doc(OPM_DATA.id).get();
+            const tbdDoc = await db.collection("stories").doc(TBD_DATA.id).get();
             
-            // Khởi tạo dữ liệu mẫu nếu chưa có
-            if (!opmDoc.exists) {
+            if (!opmDoc.exists || !tbdDoc.exists) {
                  grid.innerHTML = '<p style="text-align: center;">Đang tự động khởi tạo dữ liệu mẫu...</p>';
-                 await createOPMChapter1Data();
+                 await initializeAllData();
                  loadStories();
                  return;
             }
             
             const storyOpm = opmDoc.data();
+            const storyTbd = tbdDoc.data();
             
             // HIỂN THỊ OPM
             const opmHtml = `
@@ -939,12 +784,12 @@
             
             // HIỂN THỊ TBD-210
             const tbdHtml = `
-                <div class="story-item" onclick="showPage('detail', '${TBD_DATA.id}')">
+                <div class="story-item" onclick="showPage('detail', '${storyTbd.id}')">
                     <div class="cover-placeholder text-only" style="background-image: none;">
-                        <span>210</span>
+                        <span>${storyTbd.thumb}</span>
                     </div>
                     <div class="story-info">
-                        <h4>${TBD_DATA.title}</h4>
+                        <h4>${storyTbd.title}</h4>
                         <p>Trạng thái: Đang cập nhật</p>
                     </div>
                 </div>
@@ -953,28 +798,40 @@
             grid.innerHTML = opmHtml + tbdHtml;
         }
 
-        async function createOPMChapter1Data() {
-             const storyId = OPM_DATA.id;
-             const chapterNum = 1;
-
+        async function initializeAllData() {
              try {
-                 await db.collection("stories").doc(storyId).set({
-                     id: storyId,
+                 // 1. Tạo hoặc cập nhật thông tin truyện OPM
+                 await db.collection("stories").doc(OPM_DATA.id).set({
+                     id: OPM_DATA.id,
                      title: OPM_DATA.title,
                      thumb: OPM_DATA.thumb,
                      genres: OPM_DATA.genres,
                      description: OPM_DATA.description,
-                     maxChapters: chapterNum 
+                     maxChapters: OPM_DATA.maxChapters 
                  }, { merge: true });
+                 
+                 // 2. Tạo thông tin truyện TBD-210
+                 await db.collection("stories").doc(TBD_DATA.id).set(TBD_DATA, { merge: true });
 
-                 await db.collection("chapters").doc(`${storyId}_${chapterNum}`).set({
-                     storyId: storyId,
-                     chapter: chapterNum,
+
+                 // 3. Lưu URL chương 1 OPM
+                 await db.collection("chapters").doc(`${OPM_DATA.id}_1`).set({
+                     storyId: OPM_DATA.id,
+                     chapter: 1,
                      pageUrls: OPM_CHAPTER_1_PAGES,
                      pageCount: OPM_CHAPTER_1_PAGES.length
                  });
 
-                 console.log("Dữ liệu truyện và chương 1 đã được tạo thành công.");
+                 // 4. Lưu URL chương 2 OPM
+                 await db.collection("chapters").doc(`${OPM_DATA.id}_2`).set({
+                     storyId: OPM_DATA.id,
+                     chapter: 2,
+                     pageUrls: OPM_CHAPTER_2_PAGES,
+                     pageCount: OPM_CHAPTER_2_PAGES.length
+                 });
+
+
+                 console.log("Dữ liệu truyện mẫu đã được tạo thành công.");
              } catch (error) {
                  showCustomAlert("LỖI GHI DỮ LIỆU. Vui lòng kiểm tra lại Quy tắc Bảo mật Firestore (cần cho phép GHI nếu chưa đăng nhập).", "Lỗi nghiêm trọng!");
                  console.error("Lỗi tạo dữ liệu mẫu:", error);
