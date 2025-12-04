@@ -220,9 +220,7 @@
 
         .modal-content input[type="text"],
         .modal-content input[type="email"],
-        .modal-content input[type="password"],
-        .modal-content textarea,
-        .modal-content select {
+        .modal-content input[type="password"] {
             width: 100%;
             padding: 12px;
             margin: 8px 0 15px 0;
@@ -290,11 +288,9 @@
         }
 
         .detail-thumb .cover-placeholder {
-             /* Dùng lại CSS này để hiển thị placeholder chữ */
              width: 100%;
-             height: 350px; /* Điều chỉnh chiều cao phù hợp */
+             height: 350px;
         }
-
 
         .detail-info h1 {
             color: var(--primary-color);
@@ -468,7 +464,6 @@
     </div>
 
     <script>
-        // Cần setup Firebase Config của bạn tại đây
         const firebaseConfig = {
             apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
             authDomain: "anime-b1597.firebaseapp.com",
@@ -492,9 +487,9 @@
             title: 'One Punch Man (Mùa 1)',
             thumb: 'https://cdn.animevn.net/images/thumbs/one-punch-man-3.jpg',
             genres: ['Hành Động', 'Hài Hước', 'Siêu Năng lực'],
-            description: 'Manga kể về Saitama, một siêu anh hùng trở nên quá mạnh mẽ đến nỗi có thể đánh bại bất kỳ đối thủ nào chỉ bằng một cú đấm duy nhất.',
+            description: 'Manga kể về Saitama, một siêu anh hùng trở nên quá mạnh mẽ đến nỗi có thể đánh bại bất kỳ đối thủ nào chỉ bằng một cú đấm duy nhất. Vì vậy, anh phải đối mặt với một cuộc khủng hoảng: không có đối thủ xứng tầm, anh không còn cảm thấy sự hồi hộp khi chiến đấu.',
             status: 'Hoàn thành',
-            maxChapters: 2 
+            maxChapters: 4 
         };
         
         const TBD_DATA = {
@@ -547,9 +542,168 @@
                 'https://n11.mbzcp.org/media/amav/c23/60e7e4446613c7988ba8b32c.jpg',
                 'https://k08.mbqgu.org/media/mbav/6c2/6c2da8ee767fa7823172052f533e2436b4f44efb_300_300_170270.png',
                 'https://n12.mbxma.org/media/amav/c01/602be9b553da1a14de8bc10c.jpg'
+            ],
+             'OPM-1_3': [
+                'https://n20.mbtba.org/media/7001/5f0be4f6dc2495171784de90/1117415_280410_1066_1600.jpeg',
+                'https://n25.mbdny.org/media/7001/5f0be4f6dc2495171784de90/1117414_325399_1066_1600.jpeg',
+                'https://n17.mbtba.org/media/7001/5f0be4f6dc2495171784de90/1117413_313140_1066_1600.jpeg',
+                'https://n03.mbeaj.org/media/7001/5f0be4f6dc2495171784de90/1117417_342377_1066_1600.jpeg',
+                'https://n25.mbqtj.org/media/7001/5f0be4f6dc2495171784de90/1117416_305965_1066_1600.jpeg',
+                'https://n28.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117418_356629_1066_1600.jpeg',
+                'https://k04.mbwww.org/media/7001/5f0be4f6dc249516c1c971df/1117419_415370_1066_1600.jpeg',
+                'https://k06.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117420_432456_1066_1600.jpeg',
+                'https://n09.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117421_380639_1066_1600.jpeg',
+                'https://k02.mbopg.org/media/7001/5f0be4f6dc2495171784de90/1117422_359558_1066_1600.jpeg',
+                'https://n07.mbfpu.org/media/7001/5f0be4f6dc2495171784de90/1117424_314855_1066_1600.jpeg',
+                'https://n21.mbxma.org/media/7001/5f0be4f6dc2495171784de90/1117423_324457_1066_1600.jpeg',
+                'https://n18.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117425_280513_1066_1600.jpeg',
+                'https://k02.mbopg.org/media/7001/5f0be4f6dc2495171784de90/1117426_398590_1066_1600.jpeg',
+                'https://n18.mbtmv.org/media/7001/5f0be4f6dc2495171784de90/1117427_446555_1066_1600.jpeg',
+                'https://n23.mbwbm.org/media/7001/5f0be4f6dc2495171784de90/1117428_385082_1066_1600.jpeg',
+                'https://n25.mbwww.org/media/7001/5f0be4f6dc2495171784de90/1117429_233680_1066_1600.jpeg',
+                'https://n20.mbhiz.org/media/7001/5f0be4f6dc2495171784de90/1117430_364926_1066_1600.jpeg',
+                'https://n07.mbimg.org/media/7001/5f0be4f6dc2495171784de90/1117431_411729_1066_1600.jpeg',
+                'https://n07.mbzcp.org/media/7001/5f0be4f6dc2495171784de90/1117432_390391_1066_1600.jpeg',
+                'https://n21.mbzcp.org/media/7001/5f0be4f6dc2495171784de90/1117434_406387_1066_1600.jpeg',
+                'https://n26.mbcej.org/media/7001/5f0be4f6dc2495171784de90/1117433_323264_1066_1600.jpeg'
+            ],
+            'OPM-1_4': [
+                'https://n06.mbtmv.org/media/7001/5f0be615ce19df16db995c33/1117437_435227_1066_1600.jpeg',
+                'https://n15.mbqtj.org/media/7001/5f0be615ce19df16db995c33/1117436_300547_1066_1600.jpeg',
+                'https://n23.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117435_264958_1066_1600.jpeg',
+                'https://n26.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117440_436225_1066_1600.jpeg',
+                'https://n11.mbxma.org/media/7001/5f0be615ce19df16db995c33/1117438_383633_1066_1600.jpeg',
+                'https://n11.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117439_463219_1066_1600.jpeg',
+                'https://n28.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117441_333030_1066_1600.jpeg',
+                'https://n08.mbzcp.org/media/7001/5f0be615ce19df16db995c33/1117442_376060_1066_1600.jpeg',
+                'https://k04.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117444_333309_1066_1600.jpeg',
+                'https://k08.mbfpu.org/media/7001/5f0be615ce19df16db995c33/1117443_362945_1066_1600.jpeg',
+                'https://k07.mbmyj.org/media/7001/5f0be615ce19df16db995c33/1117447_463364_1066_1600.jpeg',
+                'https://n26.mbimg.org/media/7001/5f0be615ce19df16db995c33/1117445_306727_1066_1600.jpeg',
+                'https://n00.mbwbm.org/media/7001/5f0be615ce19df16db995c33/1117446_401334_1066_1600.jpeg',
+                'https://n16.mbtba.org/media/7001/5f0be615ce19df16db995c33/1117448_361850_1066_1600.jpeg',
+                'https://k04.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117450_459402_1066_1600.jpeg',
+                'https://n09.mbeaj.org/media/7001/5f0be615ce19df16db995c33/1117449_381755_1066_1600.jpeg',
+                'https://n12.mbxma.org/media/7001/5f0be615ce19df16db995c33/1117451_296230_1066_1600.jpeg',
+                'https://k06.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117452_476813_1066_1600.jpeg',
+                'https://n17.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117453_374264_1066_1600.jpeg',
+                'https://n07.mbdny.org/media/7001/5f0be615ce19df16db995c33/1117455_393255_1066_1600.jpeg',
+                'https://k00.mbznp.org/media/7001/5f0be615ce19df16db995c33/1117454_322442_1066_1600.jpeg',
+                'https://n22.mbrtz.org/media/7001/5f0be615ce19df16db995c33/1117457_301072_1066_1600.jpeg',
+                'https://n14.mbzcp.org/media/7001/5f0be615ce19df16db995c33/1117456_353275_1066_1600.jpeg',
+                'https://k08.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117458_383960_1066_1600.jpeg',
+                'https://n17.mbhiz.org/media/7001/5f0be615ce19df16db995c33/1117460_136829_1066_1600.jpeg',
+                'https://k08.mbdny.org/media/7001/5f0be615ce19df16db995c33/1117459_39530_1066_1600.jpeg'
             ]
         };
 
+        // --- FULL CODE FILE reader.html ---
+        function loadChapterContent(storyId, chapterNum) {
+            // Logic loadChapterContent giống như trong file reader.html đã gửi trước
+            // Sửa lỗi: Lấy dữ liệu từ CHAPTER_DATA và STORY_INDEX
+            const story = STORY_INDEX.find(s => s.id === storyId);
+            const key = `${storyId}_${chapterNum}`;
+            const images = CHAPTER_DATA[key];
+            
+            if (!story || !images || images.length === 0) {
+                 // Nếu không tìm thấy chương hoặc truyện
+                 alert("Lỗi tải chương truyện! Vui lòng quay lại.");
+                 window.location.href = `index.html#detail/${storyId}`;
+                 return;
+            }
+
+            // Lưu dữ liệu để sử dụng cho navigation (đã được fix)
+            localStorage.setItem('currentReadingData', JSON.stringify({ storyId, chapterNum, maxChapters: story.maxChapters }));
+
+            // Xây dựng nội dung HTML cho trang đọc
+            let contentHTML = '';
+            images.forEach(url => {
+                contentHTML += `<img src="${url}" alt="Trang truyện">`;
+            });
+
+            // Ghi đè toàn bộ trang đọc
+            const fullHTML = `
+                <!DOCTYPE html>
+                <html lang="vi">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${story.title} | Chương ${chapterNum}</title>
+                    <style>
+                        /* CSS TÙY CHỈNH ĐỂ ĐỌC TRUYỆN */
+                        body { background-color: #333; color: white; margin: 0; font-family: 'Segoe UI', sans-serif; }
+                        .container { max-width: 1000px; margin: 0 auto; padding: 20px 0; }
+                        .reader-nav { display: flex; justify-content: space-between; align-items: center; margin: 20px auto; max-width: 900px; padding: 10px; background-color: #444; border-radius: 5px; }
+                        .reader-nav button, .reader-nav a { padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-decoration: none; transition: background-color 0.2s; }
+                        .reader-nav button:disabled { background-color: #777; cursor: not-allowed; }
+                        .reader-content { text-align: center; background-color: #fff; padding: 20px 0; margin: 0 auto; max-width: 900px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+                        .reader-content img { max-width: 100%; height: auto; display: block; margin: 0 auto 5px auto; }
+                        .reader-current-chapter { color: white; margin: 0; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header" style="background-color: #e74c3c;">
+                        <h1 style="font-size: 1.8em;">${story.title}</h1>
+                    </div>
+                    
+                    <div class="reader-nav top-nav">
+                        <button id="prevBtn" onclick="changeChapter(-1)">← Chương Trước</button>
+                        <h3 id="reader-current-chapter" class="reader-current-chapter">Chương ${chapterNum}</h3>
+                        <button id="nextBtn" onclick="changeChapter(1)">Chương Sau →</button>
+                    </div>
+
+                    <div class="reader-content" id="reader-image-content">
+                        ${contentHTML}
+                    </div>
+                    
+                    <div class="reader-nav bottom-nav">
+                        <a href="index.html">Về Trang Chủ</a>
+                        <button id="prevBtnBottom" onclick="changeChapter(-1)">← Chương Trước</button>
+                        <a href="index.html#detail/${storyId}">VỀ TRANG CHI TIẾT</a>
+                        <button id="nextBtnBottom" onclick="changeChapter(1)">Chương Sau →</button>
+                    </div>
+                    
+                    <script>
+                        // KHỐI JS NỘI TUYẾN ĐỂ XỬ LÝ CHUYỂN CHƯƠNG TRONG READER.HTML
+                        const readingData = JSON.parse(localStorage.getItem('currentReadingData'));
+                        let currentChapterNum = readingData ? readingData.chapterNum : 1;
+                        let maxChapters = readingData ? readingData.maxChapters : 1;
+                        let storyId = readingData ? readingData.storyId : '${storyId}';
+
+                        function updateNavButtons(current, max) {
+                            document.querySelectorAll('.reader-nav button').forEach(btn => {
+                                if (btn.innerText.includes('Chương Trước')) {
+                                    btn.disabled = (current <= 1);
+                                } else if (btn.innerText.includes('Chương Sau')) {
+                                    btn.disabled = (current >= max);
+                                }
+                            });
+                        }
+
+                        function changeChapter(direction) {
+                            const newChapter = currentChapterNum + direction;
+                            if (newChapter >= 1 && newChapter <= maxChapters) {
+                                // Ghi đè dữ liệu mới vào localStorage trước khi chuyển hướng
+                                localStorage.setItem('currentReadingData', JSON.stringify({ storyId, chapterNum: newChapter, maxChapters }));
+                                // Tải lại trang với chương mới
+                                window.location.href = \`reader.html?story=\${storyId}&chapter=\${newChapter}\`;
+                            } else {
+                                alert(direction > 0 ? "Đây là chương cuối cùng!" : "Đây là chương đầu tiên!");
+                            }
+                        }
+                        
+                        // Chạy update nav khi load
+                        updateNavButtons(currentChapterNum, maxChapters);
+                    </script>
+                </body>
+                </html>
+            `;
+            // Ghi nội dung reader.html vào cửa sổ hiện tại
+            document.write(fullHTML);
+            document.close();
+        }
+
+        // CÁC HÀM AUTH VÀ DATA TỪ index.html
         async function fetchUserByUsername(username) {
             try {
                 const snapshot = await db.collection("users").where("username", "==", username).limit(1).get();
@@ -633,7 +787,6 @@
         }
         
         function getStoryData(storyId) {
-            // Lấy dữ liệu truyện từ mảng JS cố định
             return STORY_INDEX.find(s => s.id === storyId);
         }
 
@@ -642,27 +795,23 @@
             const detailThumbImg = document.getElementById('detail-thumb-img');
             const detailThumbText = document.getElementById('detail-thumb-text');
 
-
             if (!story) {
                 showCustomAlert("Truyện này không tồn tại.", "Lỗi 404!");
                 showPage('list');
                 return;
             }
-
-            // --- KIỂM TRA TRUYỆN ĐANG CẬP NHẬT (LỖI ĐÃ SỬA) ---
+            
             if (story.maxChapters === 0) {
                  showCustomAlert("Truyện này đang cập nhật nội dung.", "Thông báo!");
-                 showPage('list'); // Quay lại trang danh sách
+                 showPage('list');
                  return;
             }
             
-            // --- CẬP NHẬT THÔNG TIN TRANG CHI TIẾT ---
             document.getElementById('detail-title').innerText = story.title;
             document.getElementById('detail-description').innerText = story.description;
             document.getElementById('detail-genres').innerText = story.genres.join(', ');
             document.getElementById('detail-status').innerText = story.status;
 
-            // Xử lý hiển thị ảnh bìa (LỖI ĐÃ SỬA)
             if (story.thumb.startsWith('http')) {
                 detailThumbImg.src = story.thumb;
                 detailThumbImg.style.display = 'block';
@@ -673,7 +822,6 @@
                 detailThumbImg.style.display = 'none';
             }
 
-            // Bắt sự kiện cho nút BẮT ĐẦU ĐỌC
             document.getElementById('startReadingBtn').onclick = () => startReading(1);
 
             const chapterGrid = document.getElementById('chapter-list-grid');
@@ -693,84 +841,10 @@
         
         function startReading(chapterNum) {
              const storyId = currentStoryId;
-             // CHUYỂN HƯỚNG SANG FILE ĐỌC MỚI (LỖI ĐÃ SỬA)
-             const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
-             window.location.href = newUrl;
-        }
-
-        function openModal(formType) {
-            document.getElementById('auth-modal').style.display = 'flex';
-            showForm(formType);
-        }
-
-        function closeModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
-
-        function showForm(formType) {
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('register-form').style.display = 'none';
-            if (formType === 'login') {
-                document.getElementById('login-form').style.display = 'block';
-            } else if (formType === 'register') {
-                document.getElementById('register-form').style.display = 'block';
-            }
-        }
-
-        async function handleRegister(event) {
-            event.preventDefault();
-            const username = document.getElementById('reg-username').value;
-            const password = document.getElementById('reg-psw').value;
-
-            const existingUser = await fetchUserByUsername(username);
-            if (existingUser) {
-                showCustomAlert("Tên đăng nhập này đã được sử dụng.", "Đăng ký thất bại!");
-                return;
-            }
-
-            const newUser = await saveUser(username, password);
-            
-            if (newUser) {
-                showCustomAlert("Đăng ký thành công! Vui lòng đăng nhập.", "Hoàn tất!");
-                document.getElementById('reg-username').value = '';
-                document.getElementById('reg-psw').value = '';
-                showForm('login');
-            }
-        }
-
-        async function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('login-user').value;
-            const password = document.getElementById('login-psw').value;
-
-            const user = await fetchUserByUsername(username);
-
-            if (user && user.password === password) {
-                localStorage.setItem('currentUserData', JSON.stringify(user));
-                closeModal();
-                showCustomAlert(`Đăng nhập thành công!`, "Hoàn tất!");
-                checkLoginStatus();
-            } else {
-                showCustomAlert("Sai Tên đăng nhập hoặc Mật khẩu.", "Đăng nhập thất bại!");
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('currentUserData');
-            showCustomAlert("Đã đăng xuất thành công.", "Hoàn tất!");
-            checkLoginStatus();
-        }
-
-        async function handleUpload(event) {
-            event.preventDefault();
-            
-            const userData = JSON.parse(localStorage.getItem('currentUserData'));
-            if (!userData || userData.role !== 'author') {
-                showCustomAlert("Lỗi: Bạn không có quyền tác giả để tải truyện.", "Truy cập bị từ chối!");
-                return;
-            }
-            
-            showCustomAlert("Chức năng tải truyện bị vô hiệu hóa vì yêu cầu Firebase Storage.", "Lỗi chức năng!");
+             // LƯU TRẠNG THÁI ĐỌC VÀ CHUYỂN HƯỚNG
+             const story = getStoryData(storyId);
+             localStorage.setItem('currentReadingData', JSON.stringify({ storyId, chapterNum, maxChapters: story.maxChapters }));
+             window.location.href = `reader.html?story=${storyId}&chapter=${chapterNum}`;
         }
         
         async function loadStories() {
@@ -801,7 +875,7 @@
              if (window.location.hash.includes('#detail/')) {
                 const storyId = window.location.hash.split('/')[1];
                 showPage('detail', storyId);
-                window.location.hash = ''; // Xóa hash sau khi sử dụng
+                window.location.hash = '';
             }
         }
 
