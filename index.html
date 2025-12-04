@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truyện Tranh Hub Anime B1597</title>
+    <title>Truyện Tranh Hub | Hardcoded Content</title>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
     <style>
         :root {
             --primary-color: #e74c3c;
@@ -145,6 +144,8 @@
             font-size: 0.9em;
             text-align: center;
             border-bottom: 1px solid var(--border-color);
+            background-size: cover;
+            background-position: center;
         }
 
         .story-info {
@@ -266,7 +267,6 @@
         .upload-form label {
             display: block;
             margin-top: 15px;
-            margin-bottom: 5px;
             font-weight: bold;
         }
 
@@ -538,7 +538,7 @@
                     <p><strong>Trạng thái:</strong> Đang tiến hành</p>
                     <p><strong>Thể loại:</strong> <span id="detail-genres"></span></p>
                     <p id="detail-description">Mô tả tóm tắt...</p>
-                    <button class="modal-content button" style="width: 250px; background-color: var(--secondary-color);" onclick="startReading(1)">
+                    <button id="startReadingBtn" class="modal-content button" style="width: 250px; background-color: var(--secondary-color);">
                         BẮT ĐẦU ĐỌC
                     </button>
                 </div>
@@ -791,6 +791,8 @@
             document.getElementById('detail-description').innerText = story.description;
             document.getElementById('detail-genres').innerText = story.genres.join(', ');
 
+            document.getElementById('startReadingBtn').onclick = () => startReading(1);
+
             const chapterGrid = document.getElementById('chapter-list-grid');
             chapterGrid.innerHTML = ''; 
 
@@ -997,6 +999,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             checkLoginStatus();
             loadStories(); 
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'startReadingBtn') {
+                startReading(1);
+            }
         });
     </script>
 </body>
