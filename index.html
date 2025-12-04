@@ -49,6 +49,15 @@
         .header h1 a {
             color: white;
             font-size: 1.8em;
+            display: flex;
+            align-items: center;
+        }
+
+        .header .logo-img {
+            height: 30px; 
+            width: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
         }
 
         .auth-buttons button {
@@ -343,12 +352,54 @@
         #custom-alert.show {opacity: 1;}
         .alert-content {background-color: var(--card-bg);padding: 30px;border-radius: 10px;width: 90%;max-width: 350px;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);text-align: center;transform: scale(0.95);transition: transform 0.3s ease-out;}
         .alert-content button {background-color: var(--secondary-color);color: white;padding: 10px 30px;border: none;border-radius: 5px;font-size: 1em;width: 100%;}
+        
+        /* Tối ưu cho di động */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 15px;
+            }
+            .header h1 a {
+                font-size: 1.5em;
+            }
+            .main-layout {
+                flex-direction: column;
+                gap: 20px;
+                padding: 10px 0;
+            }
+            .sidebar {
+                width: 100%;
+                order: 2; /* Đẩy sidebar xuống dưới */
+            }
+            .main-content {
+                order: 1;
+            }
+            .story-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            .detail-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+            .detail-thumb {
+                width: 50%;
+                max-width: 200px;
+                height: auto;
+            }
+            .detail-thumb .cover-placeholder {
+                height: 280px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1><a href="#" onclick="showPage('list')">Truyện Tranh Thủ Công 🚀</a></h1>
+        <h1><a href="#" onclick="showPage('list')">
+            <img src="https://tse3.mm.bing.net/th/id/OIP.cKSMURMSurJhuoPb3_JJMAHaHa?pid=Api&P=0&h=180" alt="Logo" class="logo-img">
+            Truyện Tranh Thủ Công 🚀
+        </a></h1>
         <div class="auth-buttons" id="auth-buttons">
             <button onclick="openModal('login')">Đăng nhập</button>
             <button onclick="openModal('register')">Đăng ký</button>
@@ -507,7 +558,7 @@
         const SLS3_DATA = {
             id: 'SLS3-1',
             title: 'Solo Leveling (Ss3)',
-            thumb: 'SLS3', 
+            thumb: 'https://mangatruyenviet.com/rw/solo-leveling-ss3/cover.jpg', 
             genres: ['Hành Động', 'Fantasy', 'Webtoon'],
             description: 'Phần 3 của Solo Leveling, tiếp tục câu chuyện về thợ săn E-rank Sung Jinwoo.',
             status: 'Đang cập nhật',
@@ -625,7 +676,6 @@
                 'https://k08.mbdny.org/media/7001/5f0be615ce19df16db995c33/1117459_39530_1066_1600.jpeg'
             ],
             'SLS3-1_1': [
-                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/0.jpg',
                 'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/1.jpg',
                 'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/2.jpg',
                 'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/3.jpg',
