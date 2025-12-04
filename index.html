@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truyện Tranh Hub Tự Động Khởi Tạo</title>
+    <title>Truyện Tranh Hub Anime B1597</title>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
     <style>
@@ -116,15 +117,6 @@
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 25px;
             padding: 10px 0;
-        }
-
-        .story-item {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
         }
 
         .story-item:hover {
@@ -526,7 +518,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div id="detail-page" class="page-view" style="display: none;">
             <div class="detail-header">
                 <div class="detail-thumb">
@@ -950,8 +942,8 @@
                  grid.innerHTML += html;
              } else {
                  grid.innerHTML = '<p style="text-align: center;">Đang tự động khởi tạo dữ liệu mẫu...</p>';
-                 await createOPMChapter1Data(); // Tự động tạo dữ liệu
-                 loadStories(); // Tải lại sau khi tạo
+                 await createOPMChapter1Data();
+                 loadStories(); 
              }
         }
 
