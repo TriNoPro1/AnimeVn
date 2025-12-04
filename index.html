@@ -385,14 +385,12 @@
 </head>
 <body>
 
-    <!-- HEADER -->
     <div class="header">
         <h1><a href="#" onclick="showPage('list')">Truyện Tranh Hub 🚀</a></h1>
         <div class="auth-buttons" id="auth-buttons">
             <button onclick="openModal('login')">Đăng nhập</button>
             <button onclick="openModal('register')">Đăng ký</button>
         </div>
-        <!-- Giả lập khi đã đăng nhập -->
         <div class="auth-buttons" id="user-actions" style="display: none;">
             <button onclick="showPage('upload')">Bảng điều khiển ⚙️</button> 
             <button onclick="logout()">Đăng xuất</button>
@@ -400,9 +398,7 @@
     </div>
 
     <div class="container">
-        <!-- Trang Danh sách Truyện (Mặc định) -->
         <div id="list-page" class="page-view main-layout" style="display: flex;">
-            <!-- Sidebar: Danh sách Thể loại -->
             <div class="sidebar">
                 <h3>📚 Thể loại</h3>
                 <ul class="genre-list">
@@ -412,7 +408,6 @@
                 </ul>
             </div>
 
-            <!-- Nội dung chính: Danh sách truyện/anime -->
             <div class="main-content">
                 <h2>✨ Truyện Mới Cập Nhật</h2>
                 <div class="story-grid" id="story-list-grid">
@@ -421,7 +416,6 @@
             </div>
         </div>
 
-        <!-- Trang Tải truyện lên (Chỉ dành cho tài khoản Verified) -->
         <div id="upload-page" class="page-view" style="display: none;">
             <div class="upload-dashboard">
                 <h2>⬆️ Tải Truyện Lên Web</h2>
@@ -453,12 +447,10 @@
     </div>
 
 
-    <!-- MODAL Đăng nhập/Đăng ký -->
     <div id="auth-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             
-            <!-- FORM ĐĂNG NHẬP (Chấp nhận Username HOẶC Email) -->
             <div id="login-form">
                 <h2>Đăng nhập</h2>
                 <form onsubmit="handleLogin(event)">
@@ -475,7 +467,6 @@
                 </div>
             </div>
 
-            <!-- FORM ĐĂNG KÝ (Username BẮT BUỘC, Email TÙY CHỌN) -->
             <div id="register-form" style="display: none;">
                 <h2>Đăng ký</h2>
                 <form onsubmit="handleRegister(event)">
@@ -498,7 +489,6 @@
         </div>
     </div>
     
-    <!-- Custom Alert Modal (Nút hình hộp thông báo) -->
     <div id="custom-alert" class="alert-modal">
         <div class="alert-content">
             <h3 id="alert-title">Thông báo</h3>
@@ -507,15 +497,13 @@
         </div>
     </div>
 
-    <!-- 1. Tải Firebase SDKs (v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
 
-    <!-- 2. Khởi tạo Firebase và Logic Ứng dụng -->
     <script>
-        // --- CẤU HÌNH ĐÃ ĐƯỢC CUNG CẤP VÀ ĐƯA VÀO ---
+        // --- CẤU HÌNH DỰ ÁN CỦA BẠN (anime-b1597) ĐÃ ĐƯỢC CHÈN VÀO ---
         const firebaseConfig = {
             apiKey: "AIzaSyD6ZnooucTvCRqwjNx6Xt0b4dFxtDD7gZQ", 
             authDomain: "anime-b1597.firebaseapp.com",
@@ -638,7 +626,8 @@
                     return;
                 }
             } catch (error) {
-                 showCustomAlert("Lỗi kiểm tra tên đăng nhập. Vui lòng kiểm tra lại kết nối Firestore.", "Lỗi hệ thống!");
+                 // Lỗi này xảy ra nếu quy tắc Firestore chặn truy cập hoặc kết nối lỗi
+                 showCustomAlert("Lỗi kiểm tra tên đăng nhập. Vui lòng kiểm tra lại kết nối Firestore và Quy tắc bảo mật (Security Rules).", "Lỗi hệ thống!");
                  console.error("Lỗi Firestore khi kiểm tra tên đăng nhập:", error);
                  return;
             }
