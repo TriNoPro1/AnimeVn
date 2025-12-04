@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Truyện - Tối ưu và Chỉ dùng Tên đăng nhập</title>
+    <style>
+        /* --- CSS Tối Ưu (Giữ nguyên phần trước) --- */
+        :root {
+            --primary-color: #e74c3c; /* Đỏ - Màu thương hiệu */
+            --secondary-color: #3498db; /* Xanh dương - Nổi bật */
+            --text-color: #2c3e50;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --border-color: #bdc3c7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: var(--secondary-color);
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 a {
+            color: white;
+            font-size: 1.8em;
+        }
+
+        .auth-buttons button {
+            background: none;
+            border: 1px solid white;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .auth-buttons button:hover {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1300px;
+            margin: 20px auto;
+        }
+        
+        /* Layout */
+        .main-layout {
+            display: flex;
+            gap: 30px;
+            padding: 20px 0;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .genre-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .genre-list li a {
+            display: block;
+            padding: 10px 0;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        .genre-list li:last-child a {
+            border-bottom: none;
+        }
+
+        .genre-list li a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Grid Truyện */
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            padding: 10px 0;
+        }
+
+        .story-item {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .story-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cover-placeholder {
+            width: 100%;
+            height: 280px;
+            background-color: #cccccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #555;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .story-info {
+            padding: 15px;
+        }
+
+        .story-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-color);
+        }
+
+        .story-info p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        /* --- PHẦN ĐĂNG NHẬP/ĐĂNG KÝ (MODAL) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            color: var(--border-color);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+        }
+
+        .modal-content input[type="text"],
+        .modal-content input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 15px 0;
+            display: inline-block;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .modal-content button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.2s;
+        }
+
+        .modal-content button:hover {
+            background-color: #c0392b;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .switch-form a {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+
+        /* --- PHẦN TẢI LÊN (DASHBOARD) --- */
+        .upload-dashboard {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+        }
+
+        .upload-dashboard h2 {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .upload-form label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .upload-form input[type="text"],
+        .upload-form textarea,
+        .upload-form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        .upload-form input[type="file"] {
+             margin-top: 10px;
+        }
+
+        .upload-form button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+
+        .upload-form button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .header {
+                padding: 15px 20px;
+            }
+            .main-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1><a href="#" onclick="showPage('list')">Truyện Tranh Hub 🚀</a></h1>
+        <div class="auth-buttons" id="auth-buttons">
+            <button onclick="openModal('login')">Đăng nhập</button>
+            <button onclick="openModal('register')">Đăng ký</button>
+        </div>
+        <div class="auth-buttons" id="user-actions" style="display: none;">
+            <button onclick="showPage('upload')">Bảng điều khiển ⚙️</button>
+            <button onclick="logout()">Đăng xuất</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="list-page" class="page-view main-layout" style="display: flex;">
+            <div class="sidebar">
+                <h3>📚 Thể loại</h3>
+                <ul class="genre-list">
+                    <li><a href="#">Hành Động</a></li>
+                    <li><a href="#">Hài Hước</a></li>
+                    <li><a href="#">Lãng Mạn</a></li>
+                    <li><a href="#">Fantasy</a></li>
+                    <li><a href="#">Isekai</a></li>
+                </ul>
+            </div>
+
+            <div class="main-content">
+                <h2>✨ Truyện Mới Cập Nhật</h2>
+                <div class="story-grid">
+                    <div class="story-item" onclick="alert('Đang chuyển đến trang đọc truyện...')">
+                        <div class="cover-placeholder">
+                            <span>Truyện A: Hỗn Chiến</span>
+                        </div>
+                        <div class="story-info">
+                            <h4>Truyện Thử Nghiệm A</h4>
+                            <p>Tập mới nhất: 12</p>
+                        </div>
+                    </div>
+
+                    <div class="story-item" onclick="alert('Đang chuyển đến trang đọc truyện...')">
+                        <div class="cover-placeholder">
+                            <span>Truyện B: Lãng Mạn</span>
+                        </div>
+                        <div class="story-info">
+                            <h4>Cuộc Phiêu Lưu B</h4>
+                            <p>Tập mới nhất: 88</p>
+                        </div>
+                    </div>
+                    
+                    <div class="story-item" onclick="alert('Đang chuyển đến trang đọc truyện...')">
+                        <div class="cover-placeholder">
+                            <span>Truyện C: Thám Tử</span>
+                        </div>
+                        <div class="story-info">
+                            <h4>Siêu Thám Tử C</h4>
+                            <p>Tập mới nhất: 1000+</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="upload-page" class="page-view" style="display: none;">
+            <div class="upload-dashboard">
+                <h2>⬆️ Tải Truyện Lên Web</h2>
+                <p>Khu vực này chỉ hiển thị khi tài khoản của bạn đã được Admin xác minh là tài khoản tải giả.</p>
+                
+                <form class="upload-form" onsubmit="handleUpload(event)">
+                    <label for="title">Tên Truyện:</label>
+                    <input type="text" id="title" name="title" required placeholder="Ví dụ: Tên Truyện Mới">
+
+                    <label for="genre">Thể loại:</label>
+                    <select id="genre" name="genre">
+                        <option value="Action">Hành Động</option>
+                        <option value="Comedy">Hài Hước</option>
+                        <option value="Romance">Lãng Mạn</option>
+                    </select>
+
+                    <label for="description">Mô tả tóm tắt:</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Nhập mô tả về nội dung truyện..."></textarea>
+
+                    <label for="cover-image">Ảnh Bìa (Cover Image):</label>
+                    <input type="file" id="cover-image" name="cover-image" accept="image/*" required>
+                    
+                    <label for="chapter-files">Các Tập Truyện (Files/Images):</label>
+                    <input type="file" id="chapter-files" name="chapter-files" accept="image/*,.zip" multiple required>
+
+                    <button type="submit">Đăng Tải Truyện Mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            
+            <div id="login-form">
+                <h2>Đăng nhập</h2>
+                <form onsubmit="handleLogin(event)">
+                    <label for="login-user"><b>Tên đăng nhập</b></label>
+                    <input type="text" placeholder="Nhập Tên đăng nhập" name="login-user" id="login-user" required>
+
+                    <label for="login-psw"><b>Mật khẩu</b></label>
+                    <input type="password" placeholder="Nhập Mật khẩu" name="login-psw" id="login-psw" required>
+
+                    <button type="submit">Đăng nhập</button>
+                </form>
+                <div class="switch-form">
+                    Chưa có tài khoản? <a onclick="showForm('register')">Đăng ký ngay!</a>
+                </div>
+            </div>
+
+            <div id="register-form" style="display: none;">
+                <h2>Đăng ký</h2>
+                <form onsubmit="handleRegister(event)">
+                    <label for="reg-user"><b>Tên đăng nhập</b></label>
+                    <input type="text" placeholder="Nhập Tên đăng nhập" name="reg-user" id="reg-user" required>
+
+                    <label for="reg-psw"><b>Mật khẩu</b></label>
+                    <input type="password" placeholder="Nhập Mật khẩu (tối thiểu 6 ký tự)" name="reg-psw" id="reg-psw" minlength="6" required>
+
+                    <button type="submit">Đăng ký</button>
+                </form>
+                <div class="switch-form">
+                    Đã có tài khoản? <a onclick="showForm('login')">Đăng nhập</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        let isAuthenticated = false; // Trạng thái giả lập đăng nhập
+        let isVerifiedUploader = false; // Trạng thái giả lập tài khoản tải giả
+        
+        // Tài khoản Uploader giả lập (Chỉ cần dùng tên đăng nhập này để đăng nhập)
+        const UPLOADER_USERNAME = "admin_upload";
+
+        // --- Hàm quản lý Modal ---
+        function openModal(formType) {
+            document.getElementById('auth-modal').style.display = 'flex';
+            showForm(formType);
+        }
+
+        function closeModal() {
+            document.getElementById('auth-modal').style.display = 'none';
+        }
+
+        function showForm(formType) {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'none';
+            if (formType === 'login') {
+                document.getElementById('login-form').style.display = 'block';
+            } else if (formType === 'register') {
+                document.getElementById('register-form').style.display = 'block';
+            }
+        }
+        
+        // --- Hàm quản lý Page View ---
+        function showPage(pageId) {
+            document.getElementById('list-page').style.display = 'none';
+            document.getElementById('upload-page').style.display = 'none';
+            
+            if (pageId === 'list') {
+                document.getElementById('list-page').style.display = 'flex';
+            } else if (pageId === 'upload') {
+                if (isAuthenticated && isVerifiedUploader) {
+                    document.getElementById('upload-page').style.display = 'block';
+                } else {
+                    alert("Bạn cần phải là tài khoản tải giả đã được xác minh để truy cập chức năng này.");
+                    showPage('list'); // Chuyển về trang danh sách
+                }
+            }
+            window.scrollTo(0, 0);
+        }
+
+
+        // --- Hàm xử lý Mô phỏng Auth ---
+        function updateAuthUI() {
+            const authButtons = document.getElementById('auth-buttons');
+            const userActions = document.getElementById('user-actions');
+            
+            if (isAuthenticated) {
+                authButtons.style.display = 'none';
+                userActions.style.display = 'block';
+            } else {
+                authButtons.style.display = 'block';
+                userActions.style.display = 'none';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            // --- Backend: Xác minh tên đăng nhập/pass với CSDL ---
+            
+            const username = document.getElementById('login-user').value;
+            
+            // Giả lập đăng nhập thành công
+            isAuthenticated = true;
+            
+            // Giả lập trạng thái tài khoản tải giả dựa trên Tên đăng nhập
+            if (username.toLowerCase() === UPLOADER_USERNAME) {
+                isVerifiedUploader = true;
+            } else {
+                isVerifiedUploader = false;
+            }
+
+            updateAuthUI();
+            closeModal();
+            alert(`Đăng nhập thành công! ${isVerifiedUploader ? 'Bạn có thể tải truyện lên.' : 'Bạn là người dùng thông thường.'}`);
+            showPage('list');
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            // --- Backend: Tạo người dùng mới trong CSDL ---
+            
+            alert("Đăng ký thành công! Vui lòng đăng nhập.");
+            showForm('login');
+        }
+
+        function logout() {
+            isAuthenticated = false;
+            isVerifiedUploader = false;
+            updateAuthUI();
+            alert("Đã đăng xuất.");
+            showPage('list');
+        }
+
+        function handleUpload(event) {
+            event.preventDefault();
+            // --- Backend: Xử lý Upload file (lưu trữ) và ghi Data vào CSDL ---
+            
+            alert("Đã nhận thông tin. Trong ứng dụng thật, file sẽ được xử lý và lưu vào server/database.");
+            event.target.reset(); // Xóa form
+            showPage('list');
+        }
+
+        // Khởi tạo trạng thái UI
+        updateAuthUI();
+    </script>
+</body>
+</html>
