@@ -12,10 +12,13 @@
         :root {
             --primary-color: #e74c3c;
             --secondary-color: #3498db;
+            --accent-color: #f39c12; 
             --text-color: #2c3e50;
+            --light-text: #7f8c8d;
             --bg-color: #ecf0f1;
             --card-bg: #ffffff;
             --border-color: #bdc3c7;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
 
         body {
@@ -43,7 +46,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .header h1 a {
@@ -51,6 +54,10 @@
             font-size: 1.8em;
             display: flex;
             align-items: center;
+            transition: opacity 0.2s;
+        }
+        .header h1 a:hover {
+             opacity: 0.8;
         }
 
         .header .logo-img {
@@ -58,6 +65,8 @@
             width: 30px;
             border-radius: 50%;
             margin-right: 10px;
+            background-color: white;
+            padding: 2px;
         }
 
         .auth-buttons button {
@@ -67,7 +76,7 @@
             padding: 8px 15px;
             border-radius: 5px;
             margin-left: 10px;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, color 0.2s;
         }
         .auth-buttons button:hover {
             background-color: white;
@@ -91,12 +100,18 @@
             background-color: var(--card-bg);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow);
             height: fit-content;
         }
 
         .main-content {
             flex: 1;
+        }
+        
+        .main-content h2 {
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 8px;
+            margin-top: 0;
         }
 
         .genre-list {
@@ -111,6 +126,7 @@
             color: var(--text-color);
             border-bottom: 1px solid var(--border-color);
             font-weight: 500;
+            transition: color 0.2s;
         }
 
         .genre-list li:last-child a {
@@ -132,14 +148,14 @@
             background-color: var(--card-bg);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow);
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
         }
 
         .story-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
         }
 
         .cover-placeholder {
@@ -159,7 +175,7 @@
         }
 
         .cover-placeholder.text-only {
-            background-color: #333;
+            background-color: var(--secondary-color);
             font-size: 3em;
         }
 
@@ -178,124 +194,28 @@
 
         .story-info p {
             margin: 0;
-            color: #7f8c8d;
+            color: var(--light-text);
             font-size: 0.9em;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            margin: auto;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-
-        .close-btn {
-            color: var(--border-color);
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close-btn:hover,
-        .close-btn:focus {
-            color: var(--primary-color);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .modal-content h2 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 25px;
-        }
-
-        .modal-content input[type="text"],
-        .modal-content input[type="email"],
-        .modal-content input[type="password"],
-        .modal-content textarea,
-        .modal-content select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 15px 0;
-            display: inline-block;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        .modal-content button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            width: 100%;
-            border-radius: 5px;
-            font-size: 1.1em;
-            transition: background-color 0.2s;
-        }
-
-        .modal-content button:hover {
-            background-color: #c0392b;
-        }
-
-        .switch-form {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9em;
-        }
-        .switch-form a {
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .upload-dashboard h2 {
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
-            color: var(--text-color);
         }
 
         .detail-header {
             display: flex;
             gap: 30px;
             background-color: var(--card-bg);
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
             margin-bottom: 20px;
+            align-items: flex-start;
         }
 
         .detail-thumb {
             width: 250px;
             flex-shrink: 0;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
             border-radius: 8px;
             overflow: hidden;
             position: relative;
-        }
-
-        .detail-thumb img {
-            width: 100%;
-            height: auto;
-            display: block;
         }
 
         .detail-thumb .cover-placeholder {
@@ -303,57 +223,90 @@
              height: 350px;
         }
 
+        .detail-info {
+            flex-grow: 1;
+        }
 
         .detail-info h1 {
             color: var(--primary-color);
             margin-top: 0;
-            font-size: 2em;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .detail-info p {
+            margin-bottom: 8px;
+        }
+        
+        #startReadingBtn {
+            margin-top: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: background-color 0.2s;
+        }
+        #startReadingBtn:hover {
+            background-color: #2980b9;
         }
 
         .chapter-list-container {
             background-color: var(--card-bg);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
         }
 
         .chapter-list-container h3 {
-            border-bottom: 2px solid var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
             padding-bottom: 10px;
             margin-top: 0;
+            color: var(--text-color);
         }
 
         .chapter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
             margin-top: 15px;
         }
 
         .chapter-grid a {
             display: block;
             text-align: center;
-            background-color: #eee;
-            padding: 10px 5px;
-            border-radius: 5px;
-            font-weight: bold;
+            background-color: #f1f3f4;
+            padding: 12px 5px;
+            border-radius: 6px;
+            font-weight: 600;
             border: 1px solid #ddd;
-            transition: background-color 0.2s, color 0.2s;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
         }
 
         .chapter-grid a:hover {
             background-color: var(--primary-color);
             color: white;
+            border-color: var(--primary-color);
         }
         
-        #custom-alert {
-            position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: rgba(0, 0, 0, 0.7);z-index: 2000;display: none;justify-content: center;align-items: center;opacity: 0;transition: opacity 0.3s ease-out;
-        }
+        /* CÁC STYLE KHÁC VÀ MODAL (GIỮ NGUYÊN HOẶC CHỈNH SỬA NHẸ) */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; }
+        .modal-content { background-color: var(--card-bg); margin: auto; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); position: relative; }
+        .close-btn { color: var(--border-color); float: right; font-size: 28px; font-weight: bold; }
+        .close-btn:hover, .close-btn:focus { color: var(--primary-color); text-decoration: none; cursor: pointer; }
+        .modal-content h2 { text-align: center; color: var(--primary-color); margin-bottom: 25px; }
+        .modal-content input[type="text"], .modal-content input[type="email"], .modal-content input[type="password"], .modal-content textarea, .modal-content select { width: 100%; padding: 12px; margin: 8px 0 15px 0; display: inline-block; border: 1px solid var(--border-color); border-radius: 5px; box-sizing: border-box; }
+        .modal-content button { background-color: var(--primary-color); color: white; padding: 14px 20px; margin: 8px 0; border: none; width: 100%; border-radius: 5px; font-size: 1.1em; transition: background-color 0.2s; }
+        .modal-content button:hover { background-color: #c0392b; }
+        .switch-form { text-align: center; margin-top: 15px; font-size: 0.9em; }
+        .switch-form a { cursor: pointer; font-weight: bold; }
+        .upload-dashboard h2 { border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; color: var(--text-color); }
+        #custom-alert { position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-color: rgba(0, 0, 0, 0.7);z-index: 2000;display: none;justify-content: center;align-items: center;opacity: 0;transition: opacity 0.3s ease-out; }
         #custom-alert.show {opacity: 1;}
         .alert-content {background-color: var(--card-bg);padding: 30px;border-radius: 10px;width: 90%;max-width: 350px;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);text-align: center;transform: scale(0.95);transition: transform 0.3s ease-out;}
         .alert-content button {background-color: var(--secondary-color);color: white;padding: 10px 30px;border: none;border-radius: 5px;font-size: 1em;width: 100%;}
         
-        /* Tối ưu cho di động */
+        /* Tối ưu di động (Mobile Responsive) */
         @media (max-width: 768px) {
             .header {
                 padding: 15px 15px;
@@ -374,21 +327,35 @@
                 order: 1;
             }
             .story-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Giảm kích thước tối thiểu */
                 gap: 15px;
+            }
+            .cover-placeholder {
+                height: 220px; /* Giảm chiều cao cover */
             }
             .detail-header {
                 flex-direction: column;
                 gap: 20px;
+                padding: 20px;
                 align-items: center;
             }
             .detail-thumb {
-                width: 50%;
-                max-width: 200px;
-                height: auto;
+                width: 60%; 
+                max-width: 250px;
             }
             .detail-thumb .cover-placeholder {
-                height: 280px;
+                height: 300px;
+            }
+            .detail-info h1 {
+                font-size: 1.8em;
+                text-align: center;
+            }
+            #startReadingBtn {
+                 width: 100%;
+                 margin-left: 0;
+            }
+            .chapter-grid {
+                 grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
             }
         }
     </style>
@@ -437,7 +404,7 @@
                     <p><strong>Trạng thái:</strong> <span id="detail-status"></span></p>
                     <p><strong>Thể loại:</strong> <span id="detail-genres"></span></p>
                     <p id="detail-description">Mô tả tóm tắt...</p>
-                    <button id="startReadingBtn" class="modal-content button" style="width: 250px; background-color: var(--secondary-color);">
+                    <button id="startReadingBtn" class="modal-content button" style="width: 250px;">
                         BẮT ĐẦU ĐỌC
                     </button>
                 </div>
