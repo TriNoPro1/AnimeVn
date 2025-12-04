@@ -445,7 +445,7 @@
             <div id="register-form" style="display: none;">
                 <h2>Đăng ký</h2>
                 <form onsubmit="handleRegister(event)">
-                    <label for="reg-username"><b>Tên đăng nhập (BẮT BUỘNG)</b></label>
+                    <label for="reg-username"><b>Tên đăng nhập (BẮT BUỘC)</b></label>
                     <input type="text" placeholder="Nhập Tên đăng nhập" name="reg-username" id="reg-username" required>
                     <label for="reg-psw"><b>Mật khẩu</b></label>
                     <input type="password" placeholder="Nhập Mật khẩu (tối thiểu 6 ký tự)" name="reg-psw" id="reg-psw" minlength="6" required>
@@ -503,8 +503,18 @@
             status: 'Đang cập nhật',
             maxChapters: 0 
         };
+        
+        const SLS3_DATA = {
+            id: 'SLS3-1',
+            title: 'Solo Leveling (Ss3)',
+            thumb: 'SLS3', 
+            genres: ['Hành Động', 'Fantasy', 'Webtoon'],
+            description: 'Phần 3 của Solo Leveling, tiếp tục câu chuyện về thợ săn E-rank Sung Jinwoo.',
+            status: 'Đang cập nhật',
+            maxChapters: 1 
+        };
 
-        const STORY_INDEX = [OPM_DATA, TBD_DATA]; 
+        const STORY_INDEX = [OPM_DATA, TBD_DATA, SLS3_DATA]; 
         
         const CHAPTER_DATA = {
             'OPM-1_1': [
@@ -563,15 +573,203 @@
                 'https://n12.mbxma.org/media/amav/c01/602be9b553da1a14de8bc10c.jpg'
             ],
             'OPM-1_3': [
-                'https://i.imgur.com/example/opm_c3_p1.jpg',
-                'https://i.imgur.com/example/opm_c3_p2.jpg',
-                'https://i.imgur.com/example/opm_c3_p3.jpg',
-                'https://i.imgur.com/example/opm_c3_p4.jpg'
+                'https://n20.mbtba.org/media/7001/5f0be4f6dc2495171784de90/1117415_280410_1066_1600.jpeg',
+                'https://n25.mbdny.org/media/7001/5f0be4f6dc2495171784de90/1117414_325399_1066_1600.jpeg',
+                'https://n17.mbtba.org/media/7001/5f0be4f6dc2495171784de90/1117413_313140_1066_1600.jpeg',
+                'https://n03.mbeaj.org/media/7001/5f0be4f6dc2495171784de90/1117417_342377_1066_1600.jpeg',
+                'https://n25.mbqtj.org/media/7001/5f0be4f6dc2495171784de90/1117416_305965_1066_1600.jpeg',
+                'https://n28.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117418_356629_1066_1600.jpeg',
+                'https://k04.mbwww.org/media/7001/5f0be4f6dc2495171784de90/1117419_415370_1066_1600.jpeg',
+                'https://k06.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117420_432456_1066_1600.jpeg',
+                'https://n09.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117421_380639_1066_1600.jpeg',
+                'https://k02.mbopg.org/media/7001/5f0be4f6dc2495171784de90/1117422_359558_1066_1600.jpeg',
+                'https://n07.mbfpu.org/media/7001/5f0be4f6dc2495171784de90/1117424_314855_1066_1600.jpeg',
+                'https://n21.mbxma.org/media/7001/5f0be4f6dc2495171784de90/1117423_324457_1066_1600.jpeg',
+                'https://n18.mbrtz.org/media/7001/5f0be4f6dc2495171784de90/1117425_280513_1066_1600.jpeg',
+                'https://k02.mbopg.org/media/7001/5f0be4f6dc2495171784de90/1117426_398590_1066_1600.jpeg',
+                'https://n18.mbtmv.org/media/7001/5f0be4f6dc2495171784de90/1117427_446555_1066_1600.jpeg',
+                'https://n23.mbwbm.org/media/7001/5f0be4f6dc2495171784de90/1117428_385082_1066_1600.jpeg',
+                'https://n25.mbwww.org/media/7001/5f0be4f6dc2495171784de90/1117429_233680_1066_1600.jpeg',
+                'https://n20.mbhiz.org/media/7001/5f0be4f6dc2495171784de90/1117430_364926_1066_1600.jpeg',
+                'https://n07.mbimg.org/media/7001/5f0be4f6dc2495171784de90/1117431_411729_1066_1600.jpeg',
+                'https://n07.mbzcp.org/media/7001/5f0be4f6dc2495171784de90/1117432_390391_1066_1600.jpeg',
+                'https://n21.mbzcp.org/media/7001/5f0be4f6dc2495171784de90/1117434_406387_1066_1600.jpeg',
+                'https://n26.mbcej.org/media/7001/5f0be4f6dc2495171784de90/1117433_323264_1066_1600.jpeg'
             ],
             'OPM-1_4': [
-                'https://i.imgur.com/example/opm_c4_p1.jpg',
-                'https://i.imgur.com/example/opm_c4_p2.jpg',
-                'https://i.imgur.com/example/opm_c4_p3.jpg'
+                'https://n06.mbtmv.org/media/7001/5f0be615ce19df16db995c33/1117437_435227_1066_1600.jpeg',
+                'https://n15.mbqtj.org/media/7001/5f0be615ce19df16db995c33/1117436_300547_1066_1600.jpeg',
+                'https://n23.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117435_264958_1066_1600.jpeg',
+                'https://n26.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117440_436225_1066_1600.jpeg',
+                'https://n11.mbxma.org/media/7001/5f0be615ce19df16db995c33/1117438_383633_1066_1600.jpeg',
+                'https://n11.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117439_463219_1066_1600.jpeg',
+                'https://n28.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117441_333030_1066_1600.jpeg',
+                'https://n08.mbzcp.org/media/7001/5f0be615ce19df16db995c33/1117442_376060_1066_1600.jpeg',
+                'https://k04.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117444_333309_1066_1600.jpeg',
+                'https://k08.mbfpu.org/media/7001/5f0be615ce19df16db995c33/1117443_362945_1066_1600.jpeg',
+                'https://k07.mbmyj.org/media/7001/5f0be615ce19df16db995c33/1117447_463364_1066_1600.jpeg',
+                'https://n26.mbimg.org/media/7001/5f0be615ce19df16db995c33/1117445_306727_1066_1600.jpeg',
+                'https://n00.mbwbm.org/media/7001/5f0be615ce19df16db995c33/1117446_401334_1066_1600.jpeg',
+                'https://n16.mbtba.org/media/7001/5f0be615ce19df16db995c33/1117448_361850_1066_1600.jpeg',
+                'https://k04.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117450_459402_1066_1600.jpeg',
+                'https://n09.mbeaj.org/media/7001/5f0be615ce19df16db995c33/1117449_381755_1066_1600.jpeg',
+                'https://n12.mbxma.org/media/7001/5f0be615ce19df16db995c33/1117451_296230_1066_1600.jpeg',
+                'https://k06.mbwnp.org/media/7001/5f0be615ce19df16db995c33/1117452_476813_1066_1600.jpeg',
+                'https://n17.mbqgu.org/media/7001/5f0be615ce19df16db995c33/1117453_374264_1066_1600.jpeg',
+                'https://n07.mbdny.org/media/7001/5f0be615ce19df16db995c33/1117455_393255_1066_1600.jpeg',
+                'https://k00.mbznp.org/media/7001/5f0be615ce19df16db995c33/1117454_322442_1066_1600.jpeg',
+                'https://n22.mbrtz.org/media/7001/5f0be615ce19df16db995c33/1117457_301072_1066_1600.jpeg',
+                'https://n14.mbzcp.org/media/7001/5f0be615ce19df16db995c33/1117456_353275_1066_1600.jpeg',
+                'https://k08.mbwww.org/media/7001/5f0be615ce19df16db995c33/1117458_383960_1066_1600.jpeg',
+                'https://n17.mbhiz.org/media/7001/5f0be615ce19df16db995c33/1117460_136829_1066_1600.jpeg',
+                'https://k08.mbdny.org/media/7001/5f0be615ce19df16db995c33/1117459_39530_1066_1600.jpeg'
+            ],
+            'SLS3-1_1': [
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/0.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/1.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/2.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/3.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/4.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/5.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/6.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/7.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/8.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/9.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/10.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/11.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/12.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/13.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/14.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/15.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/16.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/17.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/18.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/19.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/20.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/21.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/22.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/23.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/24.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/25.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/26.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/27.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/28.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/29.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/30.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/31.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/32.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/33.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/34.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/35.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/36.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/37.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/38.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/39.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/40.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/41.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/42.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/43.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/44.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/45.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/46.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/47.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/48.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/49.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/50.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/51.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/52.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/53.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/54.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/55.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/56.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/57.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/58.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/59.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/60.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/61.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/62.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/63.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/64.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/65.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/66.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/67.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/68.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/69.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/70.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/71.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/72.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/73.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/74.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/75.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/76.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/77.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/78.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/79.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/80.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/81.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/82.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/83.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/84.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/85.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/86.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/87.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/88.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/89.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/90.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/91.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/92.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/93.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/94.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/95.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/96.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/97.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/98.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/99.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/100.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/101.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/102.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/103.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/104.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/105.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/106.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/107.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/108.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/109.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/110.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/111.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/112.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/113.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/114.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/115.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/116.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/117.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/118.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/119.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/120.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/121.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/122.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/123.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/124.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/125.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/126.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/127.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/128.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/129.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/130.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/131.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/132.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/133.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/134.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/135.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/136.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/137.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/138.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/139.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/140.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/141.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/142.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/143.jpg',
+                'https://mangatruyenviet.com/rw/solo-leveling-ss3/chapter-1/144.jpg'
             ]
         };
 
@@ -712,9 +910,13 @@
         }
         
         function startReading(chapterNum) {
-             const storyId = currentStoryId;
-             const newUrl = `reader.html?story=${storyId}&chapter=${chapterNum}`;
-             window.location.href = newUrl;
+            const storyId = currentStoryId;
+            let newReaderFile = 'reader.html';
+            if (storyId === 'SLS3-1') {
+                newReaderFile = 'docsololeveling.html';
+            }
+            const newUrl = `${newReaderFile}?story=${storyId}&chapter=${chapterNum}`;
+            window.location.href = newUrl;
         }
 
         function openModal(formType) {
